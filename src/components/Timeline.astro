@@ -1,0 +1,132 @@
+---
+import type { ExperienceItem } from '../data/experience';
+import { formatDateRange } from '../lib/dates';
+
+type Props = {
+	items: ExperienceItem[];
+};
+
+const { items } = Astro.props;
+---
+
+<ol class="timeline" aria-label="Experiencia laboral">
+	{items.map((item) => (
+		<li class="item card" data-reveal>
+			<div class="dot" aria-hidden="true"></div>
+			<div class="content">
+				<div class="row">
+					<h3 class="role">{item.role}</h3>
+					<p class="range muted">{formatDateRange(item.start, item.end)}</p>
+				</div>
+				<p class="company muted">
+					<strong>{item.company}</strong>
+					{item.location ? <span> · {item.location}</span> : null}
+				</p>
+				<p class="summary muted">{item.summary}</p>
+				<ul class="highlights">
+					{item.highlights.map((h) => (
+						<li>{h}</li>
+					))}
+				</ul>
+			</div>
+		</li>
+	))}
+</ol>
+
+<style>
+	.timeline {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		gap: 16px;
+		position: relative;
+	}
+
+	.timeline::before {
+		content: '';
+		position: absolute;
+		left: 16px;
+		top: 6px;
+		bottom: 6px;
+		width: 2px;
+		background: linear-gradient(180deg, transparent, var(--border), transparent);
+	}
+
+	.item {
+		position: relative;
+		padding: 18px 18px 18px 46px;
+		background: linear-gradient(180deg, var(--surface), transparent);
+	}
+
+	.dot {
+		position: absolute;
+		left: 9px;
+		top: 24px;
+		width: 16px;
+		height: 16px;
+		border-radius: 999px;
+		background: linear-gradient(135deg, var(--accent), var(--accent-2));
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+	}
+
+	.row {
+		display: grid;
+		gap: 4px;
+	}
+
+	.role {
+		margin: 0;
+		font-size: 18px;
+		letter-spacing: -0.2px;
+	}
+
+	.range {
+		margin: 0;
+		font-size: 13px;
+	}
+
+	.company {
+		margin: 8px 0 0;
+		font-size: 14px;
+	}
+
+	.summary {
+		margin: 10px 0 0;
+		font-size: 14px;
+		max-width: 85ch;
+	}
+
+	.highlights {
+		margin: 12px 0 0;
+		padding: 0;
+		list-style: none;
+		display: grid;
+		gap: 8px;
+		color: var(--text);
+	}
+
+	.highlights li {
+		display: flex;
+		gap: 10px;
+		align-items: flex-start;
+	}
+
+	.highlights li::before {
+		content: '';
+		width: 8px;
+		height: 8px;
+		margin-top: 6px;
+		border-radius: 999px;
+		background: var(--surface-2);
+		border: 1px solid var(--border);
+		flex: 0 0 auto;
+	}
+
+	@media (min-width: 820px) {
+		.row {
+			grid-template-columns: 1fr auto;
+			align-items: baseline;
+		}
+	}
+</style>

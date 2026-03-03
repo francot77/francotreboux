@@ -1,0 +1,56 @@
+---
+import { SITE } from '../consts';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+	<div class="container inner">
+		<p class="muted">© {year} {SITE.name}. Hecho con Astro.</p>
+		<div class="links">
+			<a href={SITE.social.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+			<a href={SITE.social.github} target="_blank" rel="noreferrer">GitHub</a>
+			{SITE.social.x ? (
+				<a href={SITE.social.x} target="_blank" rel="noreferrer">
+					X
+				</a>
+			) : null}
+		</div>
+	</div>
+</footer>
+
+<style>
+	.footer {
+		padding: 38px 0 52px;
+		border-top: 1px solid var(--border);
+		background: color-mix(in oklab, var(--bg) 86%, transparent);
+	}
+
+	.inner {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		align-items: flex-start;
+		justify-content: space-between;
+	}
+
+	.links {
+		display: inline-flex;
+		gap: 14px;
+		align-items: center;
+		color: var(--muted);
+		font-weight: 600;
+		font-size: 14px;
+	}
+
+	.links a:hover {
+		color: var(--text);
+		text-decoration: none;
+	}
+
+	@media (min-width: 780px) {
+		.inner {
+			flex-direction: row;
+			align-items: center;
+		}
+	}
+</style>

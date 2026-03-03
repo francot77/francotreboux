@@ -1,0 +1,81 @@
+---
+import type { SimpleIcon } from "simple-icons";
+import {
+	siAstro,
+	siCloudflare,
+	siCss,
+	siExpo,
+	siGit,
+	siHtml5,
+	siJavascript,
+	siLinux,
+	siMercadopago,
+	siMongodb,
+	siNextdotjs,
+	siNodedotjs,
+	siPostgresql,
+	siRabbitmq,
+	siRailway,
+	siReact,
+	siRust,
+	siSupabase,
+	siTailwindcss,
+	siTestinglibrary,
+	siTypescript,
+	siVercel,
+	siVite,
+	siWoocommerce,
+	siWordpress,
+} from "simple-icons";
+
+type Props = {
+	label: string;
+};
+
+const { label } = Astro.props;
+
+const techIcons: Record<string, SimpleIcon> = {
+	Astro: siAstro,
+	"Next.js": siNextdotjs,
+	TypeScript: siTypescript,
+	JavaScript: siJavascript,
+	React: siReact,
+	"Node.js": siNodedotjs,
+	Vite: siVite,
+	Rust: siRust,
+	RabbitMQ: siRabbitmq,
+	MongoDB: siMongodb,
+	PostgreSQL: siPostgresql,
+	Cloudflare: siCloudflare,
+	Vercel: siVercel,
+	Railway: siRailway,
+	"Tailwind CSS": siTailwindcss,
+	Supabase: siSupabase,
+	WordPress: siWordpress,
+	WooCommerce: siWoocommerce,
+	"Mercado Pago": siMercadopago,
+	Git: siGit,
+	CSS: siCss,
+	HTML: siHtml5,
+	Testing: siTestinglibrary,
+	Linux: siLinux,
+	Expo: siExpo,
+};
+
+function resolveTechIcon(tech: string): SimpleIcon | undefined {
+	if (techIcons[tech]) return techIcons[tech];
+	if (tech === "Cloudflare Edge") return techIcons.Cloudflare;
+	if (tech === "Tailwind") return techIcons["Tailwind CSS"];
+	if (tech.startsWith("Supabase")) return techIcons.Supabase;
+	if (tech === "MercadoPago API") return techIcons["Mercado Pago"];
+	if (tech === "React Native") return techIcons.React;
+	return undefined;
+}
+
+const icon = resolveTechIcon(label);
+---
+
+<li class={icon ? "chip techChip" : "chip"} style={icon ? `--tech-color: #${icon.hex}` : undefined}>
+	{icon ? <span class="techIcon" aria-hidden="true" set:html={icon.svg} /> : null}
+	<span class="label">{label}</span>
+</li>

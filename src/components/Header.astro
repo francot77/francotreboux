@@ -1,0 +1,254 @@
+---
+import { SITE } from "../consts";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const nav = [
+	{ href: "/", label: "Inicio" },
+	{ href: "/proyectos", label: "Proyectos" },
+	{ href: "/experiencia", label: "Experiencia" },
+	{ href: "/acerca", label: "Acerca de mí" },
+	{ href: "/certificaciones", label: "Certificaciones" },
+	{ href: "/contacto", label: "Contacto" },
+];
+---
+
+<header class="header">
+	<div class="container inner">
+		<span>💼</span>
+		<a
+			class="brand"
+			href="/"
+			data-astro-prefetch="viewport"
+			aria-label={`Ir al inicio: ${SITE.name}`}
+		>
+			<span class="name">{SITE.name}</span>
+		</a>
+
+		<nav class="nav" aria-label="Navegación principal">
+			{
+				nav.map((item) => (
+					<a
+						class="link"
+						href={item.href}
+						data-astro-prefetch="viewport"
+					>
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
+
+		<div class="actions">
+			<button
+				class="button button-ghost menu"
+				type="button"
+				data-menu-open
+				aria-haspopup="dialog"
+			>
+				Menú
+			</button>
+			<a
+				class="button button-ghost"
+				href={SITE.social.github}
+				target="_blank"
+				rel="noreferrer"
+			>
+				GitHub
+			</a>
+			<ThemeToggle />
+		</div>
+	</div>
+</header>
+
+<dialog class="dialog" data-menu-dialog aria-label="Menú">
+	<div class="dialogInner">
+		<div class="dialogTop">
+			<p class="dialogTitle">{SITE.name}</p>
+			<button class="button button-ghost" type="button" data-menu-close
+				>Cerrar</button
+			>
+		</div>
+		<nav class="dialogNav" aria-label="Navegación móvil">
+			{
+				nav.map((item) => (
+					<a
+						class="dialogLink"
+						href={item.href}
+						data-menu-link
+						data-astro-prefetch="viewport"
+					>
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
+	</div>
+</dialog>
+
+<script is:inline>
+	(() => {
+		const dialog = document.querySelector("[data-menu-dialog]");
+		const openBtn = document.querySelector("[data-menu-open]");
+		const closeBtn = document.querySelector("[data-menu-close]");
+		if (!(dialog instanceof HTMLDialogElement)) return;
+		if (!(openBtn instanceof HTMLButtonElement)) return;
+		const close = () => {
+			if (dialog.open) dialog.close();
+		};
+		openBtn.addEventListener("click", () => {
+			if (dialog.open) return;
+			dialog.showModal();
+		});
+		closeBtn?.addEventListener("click", close);
+		dialog.addEventListener("click", (e) => {
+			if (e.target === dialog) close();
+		});
+		for (const link of dialog.querySelectorAll("[data-menu-link]")) {
+			link.addEventListener("click", close);
+		}
+	})();
+</script>
+
+<style>
+	.header {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: var(--header-h);
+		display: flex;
+		align-items: center;
+		backdrop-filter: blur(10px);
+		background: color-mix(in oklab, var(--bg) 76%, transparent);
+		border-bottom: 1px solid var(--border);
+		z-index: 20;
+	}
+
+	.inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 14px;
+	}
+
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		font-weight: 800;
+		letter-spacing: 0.2px;
+	}
+
+	.mark {
+		width: 18px;
+		height: 18px;
+		border-radius: 6px;
+		background: linear-gradient(135deg, var(--accent), var(--accent-2));
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+	}
+
+	.name {
+		font-size: 15px;
+	}
+
+	.nav {
+		display: none;
+		gap: 14px;
+		align-items: center;
+	}
+
+	.link {
+		padding: 8px 10px;
+		border-radius: 999px;
+		color: var(--muted);
+		font-size: 14px;
+		font-weight: 600;
+		transition:
+			background 160ms var(--ease),
+			color 160ms var(--ease);
+	}
+
+	.link:hover {
+		background: var(--surface);
+		color: var(--text);
+		text-decoration: none;
+	}
+
+	.actions {
+		display: inline-flex;
+		gap: 10px;
+		align-items: center;
+	}
+
+	.button-ghost {
+		background: transparent;
+		box-shadow: none;
+	}
+
+	.menu {
+		display: inline-flex;
+	}
+
+	.dialog {
+		width: min(520px, calc(100% - 32px));
+		border: 1px solid var(--border);
+		border-radius: 18px;
+		padding: 0;
+		background: color-mix(in oklab, var(--bg) 86%, transparent);
+		color: var(--text);
+		box-shadow: var(--shadow);
+	}
+
+	.dialog::backdrop {
+		background: rgba(0, 0, 0, 0.55);
+		backdrop-filter: blur(4px);
+	}
+
+	.dialogInner {
+		padding: 16px;
+		display: grid;
+		gap: 14px;
+	}
+
+	.dialogTop {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+	}
+
+	.dialogTitle {
+		margin: 0;
+		font-weight: 900;
+		letter-spacing: -0.2px;
+	}
+
+	.dialogNav {
+		display: grid;
+		gap: 8px;
+	}
+
+	.dialogLink {
+		padding: 12px 12px;
+		border-radius: 14px;
+		border: 1px solid var(--border);
+		background: var(--surface);
+		color: var(--text);
+		font-weight: 800;
+		letter-spacing: -0.2px;
+	}
+
+	.dialogLink:hover {
+		background: var(--surface-2);
+		text-decoration: none;
+	}
+
+	@media (min-width: 860px) {
+		.nav {
+			display: inline-flex;
+		}
+		.menu {
+			display: none;
+		}
+	}
+</style>

@@ -1,0 +1,105 @@
+---
+import { SITE } from '../consts';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import '../styles/global.css';
+
+type Props = {
+	title?: string;
+	description?: string;
+	canonicalPath?: string;
+};
+
+const { title, description, canonicalPath } = Astro.props;
+const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.role}`;
+const pageDescription = description ?? SITE.description;
+const baseUrl = Astro.site?.href ?? Astro.url.origin;
+const canonicalUrl = new URL(canonicalPath ?? Astro.url.pathname, baseUrl).toString();
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="index,follow" />
+		<meta name="description" content={pageDescription} />
+		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0c10" />
+		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafafa" />
+		<link rel="canonical" href={canonicalUrl} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<title>{pageTitle}</title>
+
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="es_ES" />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={pageDescription} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:site_name" content={SITE.name} />
+
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content={pageTitle} />
+		<meta name="twitter:description" content={pageDescription} />
+
+		<meta name="generator" content={Astro.generator} />
+		<script type="application/ld+json" is:inline>
+			{JSON.stringify({
+				'@context': 'https://schema.org',
+				'@type': 'Person',
+				name: SITE.name,
+				jobTitle: SITE.role,
+				url: baseUrl,
+				email: SITE.email ? `mailto:${SITE.email}` : undefined,
+				sameAs: Object.values(SITE.social).filter(Boolean),
+			})}
+		</script>
+
+		<script is:inline>
+			(() => {
+				const storageKey = 'theme';
+				const saved = localStorage.getItem(storageKey);
+				const prefersLight = window.matchMedia?.('(prefers-color-scheme: light)').matches;
+				const theme = saved === 'light' || saved === 'dark' ? saved : prefersLight ? 'light' : 'dark';
+				document.documentElement.dataset.theme = theme;
+			})();
+		</script>
+	</head>
+	<body>
+		<a class="sr-only" href="#contenido">Saltar al contenido</a>
+		<Header />
+		<main id="contenido">
+			<slot />
+		</main>
+		<Footer />
+		<script is:inline>
+			(() => {
+				const targets = Array.from(document.querySelectorAll('[data-reveal]'));
+				if (targets.length === 0) return;
+				const observer = new IntersectionObserver(
+					(entries) => {
+						for (const entry of entries) {
+							if (!entry.isIntersecting) continue;
+							const el = entry.target;
+							el.setAttribute('data-reveal-visible', 'true');
+							observer.unobserve(el);
+						}
+					},
+					{ rootMargin: '0px 0px -10% 0px', threshold: 0.15 },
+				);
+				for (const el of targets) observer.observe(el);
+			})();
+		</script>
+	</body>
+</html>
+
+<style>
+	body {
+		padding-top: var(--header-h);
+	}
+
+	main {
+		min-height: calc(100vh - var(--header-h));
+	}
+</style>
+

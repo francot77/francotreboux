@@ -1,0 +1,222 @@
+:root {
+    --bg: #0b0c10;
+    --surface: rgba(255, 255, 255, 0.06);
+    --surface-2: rgba(255, 255, 255, 0.1);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.7);
+    --border: rgba(255, 255, 255, 0.12);
+    --shadow: 0 16px 45px rgba(0, 0, 0, 0.35);
+    --accent: #8b5cf6;
+    --accent-2: #22c55e;
+    --radius: 16px;
+    --max: 1100px;
+    --header-h: 68px;
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    color-scheme: dark;
+}
+
+html[data-theme='light'] {
+    --bg: #fafafa;
+    --surface: rgba(0, 0, 0, 0.04);
+    --surface-2: rgba(0, 0, 0, 0.08);
+    --text: rgba(0, 0, 0, 0.88);
+    --muted: rgba(0, 0, 0, 0.68);
+    --border: rgba(0, 0, 0, 0.12);
+    --shadow: 0 18px 55px rgba(0, 0, 0, 0.12);
+    --accent: #6d28d9;
+    --accent-2: #16a34a;
+    color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji',
+        'Segoe UI Emoji';
+    letter-spacing: 0.1px;
+    line-height: 1.5;
+    isolation: isolate;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: -20vh -15vw;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(1400px 900px at 80% -10%, rgba(139, 92, 246, 0.18), transparent 62%),
+        radial-gradient(1200px 800px at 0% 25%, rgba(34, 197, 94, 0.12), transparent 60%),
+        radial-gradient(900px 700px at 60% 110%, rgba(139, 92, 246, 0.08), transparent 65%);
+    filter: blur(42px) saturate(115%);
+    opacity: 0.95;
+    transform: translateZ(0);
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+            color-mix(in oklab, var(--bg) 75%, transparent),
+            transparent 20%,
+            transparent 80%,
+            color-mix(in oklab, var(--bg) 75%, transparent));
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+img,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+.container {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.grid {
+    display: grid;
+    gap: 18px;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1;
+}
+
+.techChip {
+    --tech-color: var(--muted);
+    border-color: color-mix(in oklab, var(--tech-color) 35%, var(--border));
+    background: color-mix(in oklab, var(--tech-color) 10%, var(--surface));
+}
+
+.techIcon {
+    width: 16px;
+    height: 16px;
+    color: var(--tech-color);
+    flex: 0 0 auto;
+}
+
+.techIcon svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.techIcon path {
+    fill: currentColor;
+}
+
+.card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface), transparent);
+    box-shadow: var(--shadow);
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 160ms var(--ease), background 160ms var(--ease), border-color 160ms var(--ease);
+    user-select: none;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+    background: var(--surface-2);
+    text-decoration: none;
+}
+
+.button:active {
+    transform: translateY(0px);
+}
+
+.button[aria-disabled='true'],
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+    transition: opacity 420ms var(--ease), transform 420ms var(--ease), filter 420ms var(--ease);
+}
+
+[data-reveal][data-reveal-visible='true'] {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        transition: none;
+    }
+
+    .button {
+        transition: none;
+    }
+}

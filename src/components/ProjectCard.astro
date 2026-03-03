@@ -1,0 +1,160 @@
+---
+import type { Project } from "../data/projects";
+import TechChip from "./TechChip.astro";
+
+type Props = {
+	project: Project;
+};
+
+const { project } = Astro.props;
+const { title, description, technologies, links, highlights } = project;
+---
+
+<article class="card project" data-reveal>
+	<div class="top">
+		<h3 class="title">{title}</h3>
+		<p class="desc muted">{description}</p>
+	</div>
+
+	<div class="meta">
+		<ul class="tech" aria-label="Tecnologías">
+			{technologies.map((t) => (
+				<TechChip label={t} />
+			))}
+		</ul>
+
+		<div class="actions" aria-label="Enlaces del proyecto">
+			{
+				links.demo ? (
+					<a
+						class="button button-sm"
+						href={links.demo}
+						target="_blank"
+						rel="noreferrer"
+					>
+						Ver
+					</a>
+				) : null
+			}
+			{
+				links.repo ? (
+					<a
+						class="button button-sm"
+						href={links.repo}
+						target="_blank"
+						rel="noreferrer"
+					>
+						Repositorio
+					</a>
+				) : null
+			}
+			{
+				links.caseStudy ? (
+					<a class="button button-sm" href={links.caseStudy}>
+						Detalle
+					</a>
+				) : null
+			}
+		</div>
+	</div>
+
+	{
+		highlights?.length ? (
+			<ul class="highlights" aria-label="Aspectos destacados">
+				{highlights.slice(0, 3).map((h) => (
+					<li>{h}</li>
+				))}
+			</ul>
+		) : null
+	}
+</article>
+
+<style>
+	.project {
+		padding: 18px;
+		display: grid;
+		gap: 16px;
+		transition:
+			transform 180ms var(--ease),
+			border-color 180ms var(--ease),
+			background 180ms var(--ease);
+	}
+
+	.project:hover {
+		transform: translateY(-2px);
+		border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+		background: linear-gradient(
+			180deg,
+			color-mix(in oklab, var(--surface) 70%, transparent),
+			transparent
+		);
+	}
+
+	.top {
+		display: grid;
+		gap: 8px;
+	}
+
+	.title {
+		margin: 0;
+		font-size: 18px;
+		letter-spacing: -0.2px;
+	}
+
+	.desc {
+		margin: 0;
+		font-size: 14px;
+	}
+
+	.meta {
+		display: grid;
+		gap: 12px;
+	}
+
+	.tech {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	.actions {
+		display: inline-flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		align-items: center;
+	}
+
+	.button-sm {
+		padding: 9px 11px;
+		font-size: 13px;
+	}
+
+	.highlights {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		display: grid;
+		gap: 8px;
+		color: var(--muted);
+		font-size: 14px;
+	}
+
+	.highlights li {
+		display: flex;
+		gap: 10px;
+		align-items: flex-start;
+	}
+
+	.highlights li::before {
+		content: "";
+		width: 8px;
+		height: 8px;
+		margin-top: 6px;
+		border-radius: 999px;
+		background: linear-gradient(135deg, var(--accent), var(--accent-2));
+		flex: 0 0 auto;
+	}
+</style>

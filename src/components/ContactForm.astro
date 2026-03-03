@@ -1,0 +1,151 @@
+---
+type Props = {
+	subjectTag?: string;
+};
+
+const { subjectTag } = Astro.props;
+---
+
+<form
+	class="form"
+	method="post"
+	action="/contacto?enviado=1"
+	data-netlify="true"
+	netlify-honeypot="website"
+	name="contact"
+	data-contact-form
+>
+	<input type="hidden" name="form-name" value="contact" />
+	<input type="hidden" name="subjectTag" value={subjectTag ?? ''} />
+	<div class="row">
+		<label class="field">
+			<span class="label">Nombre</span>
+			<input class="input" type="text" name="name" autocomplete="name" required minlength="2" />
+		</label>
+		<label class="field">
+			<span class="label">Email</span>
+			<input class="input" type="email" name="email" autocomplete="email" required />
+		</label>
+	</div>
+
+	<label class="field">
+		<span class="label">Mensaje</span>
+		<textarea class="input textarea" name="message" required minlength="10" rows="6"></textarea>
+	</label>
+
+	<label class="sr-only" aria-hidden="true">
+		<span>Website</span>
+		<input type="text" name="website" tabindex="-1" autocomplete="off" />
+	</label>
+
+	<div class="actions">
+		<button class="button" type="submit">Enviar mensaje</button>
+		<p class="status muted" aria-live="polite" data-status></p>
+	</div>
+</form>
+
+<script is:inline>
+	(() => {
+		const form = document.querySelector('[data-contact-form]');
+		if (!(form instanceof HTMLFormElement)) return;
+		const status = form.querySelector('[data-status]');
+		const setStatus = (text) => {
+			if (!status) return;
+			status.textContent = text;
+		};
+		form.addEventListener('submit', async (e) => {
+			if (!('fetch' in window)) return;
+			e.preventDefault();
+			setStatus('Enviando…');
+			const submitButton = form.querySelector('button[type="submit"]');
+			if (submitButton instanceof HTMLButtonElement) submitButton.disabled = true;
+			try {
+			const res = await fetch('/api/contact', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(Object.fromEntries(new FormData(form))),
+				});
+			if (res.status === 404 || res.status === 405 || res.status === 501) {
+				if (submitButton instanceof HTMLButtonElement) submitButton.disabled = false;
+				form.submit();
+				return;
+			}
+				const data = await res.json().catch(() => ({}));
+				if (!res.ok) {
+					setStatus(data?.message ?? 'No se pudo enviar. Intenta nuevamente.');
+					if (submitButton instanceof HTMLButtonElement) submitButton.disabled = false;
+					return;
+				}
+				form.reset();
+				setStatus('Mensaje enviado. ¡Gracias!');
+			} catch {
+				setStatus('Error de red. Intenta nuevamente.');
+				if (submitButton instanceof HTMLButtonElement) submitButton.disabled = false;
+			}
+		});
+	})();
+</script>
+
+<style>
+	.form {
+		display: grid;
+		gap: 14px;
+	}
+
+	.row {
+		display: grid;
+		gap: 14px;
+	}
+
+	.field {
+		display: grid;
+		gap: 8px;
+	}
+
+	.label {
+		font-weight: 800;
+		font-size: 14px;
+		letter-spacing: -0.2px;
+	}
+
+	.input {
+		width: 100%;
+		padding: 12px 12px;
+		border-radius: 14px;
+		border: 1px solid var(--border);
+		background: color-mix(in oklab, var(--surface) 70%, transparent);
+		color: var(--text);
+		font-size: 14px;
+		outline: none;
+		transition: border-color 160ms var(--ease), background 160ms var(--ease);
+	}
+
+	.input:focus {
+		border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+		background: color-mix(in oklab, var(--surface-2) 70%, transparent);
+	}
+
+	.textarea {
+		resize: vertical;
+	}
+
+	.actions {
+		display: grid;
+		gap: 10px;
+		align-items: center;
+	}
+
+	.status {
+		margin: 0;
+		min-height: 1.25em;
+	}
+
+	@media (min-width: 860px) {
+		.row {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		.actions {
+			grid-template-columns: auto 1fr;
+		}
+	}
+</style>

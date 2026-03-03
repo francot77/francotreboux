@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { projects } from '../data/projects';
+
+export const prerender = true;
+---
+
+<BaseLayout title="Proyectos" description="Proyectos con tecnologías utilizadas y enlaces a demos.">
+	<Section title="Proyectos" subtitle="Tarjetas interactivas con tecnologías y enlaces." id="proyectos">
+		<div class="grid list">
+			{projects.map((project) => (
+				<ProjectCard project={project} />
+			))}
+		</div>
+	</Section>
+</BaseLayout>
+
+<style>
+	.list {
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 940px) {
+		.list {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+</style>

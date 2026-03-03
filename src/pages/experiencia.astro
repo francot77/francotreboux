@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Timeline from '../components/Timeline.astro';
+import { experience } from '../data/experience';
+
+export const prerender = true;
+---
+
+<BaseLayout title="Experiencia" description="Experiencia laboral en línea de tiempo cronológica.">
+	<Section title="Experiencia laboral" subtitle="Roles ordenados cronológicamente." id="experiencia">
+		<Timeline items={experience} />
+	</Section>
+</BaseLayout>

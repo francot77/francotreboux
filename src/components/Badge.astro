@@ -1,0 +1,130 @@
+---
+type Props = {
+	label: string;
+	title: string;
+	subtitle?: string;
+	href?: string;
+	imageSrc?: string;
+	imageAlt?: string;
+};
+
+const { label, title, subtitle, href, imageSrc, imageAlt } = Astro.props;
+---
+
+{
+	href ? (
+		<a class="badge card" href={href} target="_blank" rel="noreferrer" data-reveal>
+			<div class="mark" aria-hidden="true" data-has-image={imageSrc ? 'true' : undefined}>
+				{imageSrc ? (
+					<img
+						class="markImg"
+						src={imageSrc}
+						alt={imageAlt ?? ''}
+						loading="lazy"
+						decoding="async"
+						onerror="this.style.display='none'; this.parentElement && this.parentElement.removeAttribute('data-has-image');"
+					/>
+				) : null}
+				<span class="markFallback">{label}</span>
+			</div>
+			<div class="text">
+				<p class="name">{title}</p>
+				{subtitle ? <p class="sub muted">{subtitle}</p> : null}
+			</div>
+		</a>
+	) : (
+		<div class="badge card" data-reveal>
+			<div class="mark" aria-hidden="true" data-has-image={imageSrc ? 'true' : undefined}>
+				{imageSrc ? (
+					<img
+						class="markImg"
+						src={imageSrc}
+						alt={imageAlt ?? ''}
+						loading="lazy"
+						decoding="async"
+						onerror="this.style.display='none'; this.parentElement && this.parentElement.removeAttribute('data-has-image');"
+					/>
+				) : null}
+				<span class="markFallback">{label}</span>
+			</div>
+			<div class="text">
+				<p class="name">{title}</p>
+				{subtitle ? <p class="sub muted">{subtitle}</p> : null}
+			</div>
+		</div>
+	)
+}
+
+<style>
+	.badge {
+		display: flex;
+		gap: 14px;
+		align-items: center;
+		padding: 16px;
+		text-decoration: none;
+		transition: transform 180ms var(--ease), border-color 180ms var(--ease);
+	}
+
+	.badge:hover {
+		transform: translateY(-2px);
+		border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
+		text-decoration: none;
+	}
+
+	.mark {
+		width: 44px;
+		height: 44px;
+		border-radius: 14px;
+		display: grid;
+		place-items: center;
+		font-weight: 900;
+		background: linear-gradient(135deg, var(--accent), var(--accent-2));
+		color: white;
+		letter-spacing: 0.5px;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.mark[data-has-image='true'] {
+		background: transparent;
+		border: none;
+	}
+
+	.mark[data-has-image='true'] .markImg {
+		border-radius: 11px;
+	}
+
+	.markImg {
+		position: absolute;
+		inset: 3px;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		object-position: center;
+	}
+
+	.mark[data-has-image='true'] .markFallback {
+		display: none;
+	}
+
+	.markFallback {
+		position: relative;
+		z-index: 1;
+	}
+
+	.text {
+		display: grid;
+		gap: 4px;
+	}
+
+	.name {
+		margin: 0;
+		font-weight: 800;
+		letter-spacing: -0.2px;
+	}
+
+	.sub {
+		margin: 0;
+		font-size: 14px;
+	}
+</style>
