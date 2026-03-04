@@ -39,6 +39,11 @@ body {
     height: 100%;
 }
 
+html {
+    overflow-x: clip;
+    scroll-padding-top: calc(var(--header-h) + 16px);
+}
+
 body {
     margin: 0;
     background: var(--bg);
@@ -48,6 +53,7 @@ body {
     letter-spacing: 0.1px;
     line-height: 1.5;
     isolation: isolate;
+    overflow-x: clip;
 }
 
 body::before {
@@ -87,6 +93,12 @@ a:hover {
     text-underline-offset: 4px;
 }
 
+p,
+a,
+li {
+    overflow-wrap: anywhere;
+}
+
 img,
 svg {
     display: block;
@@ -96,7 +108,7 @@ svg {
 .container {
     max-width: var(--max);
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 clamp(16px, 4vw, 20px);
 }
 
 .grid {

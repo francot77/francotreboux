@@ -14,7 +14,7 @@ const nav = [
 
 <header class="header">
 	<div class="container inner">
-		<span>💼</span>
+		<span class="emoji" aria-hidden="true">💼</span>
 		<a
 			class="brand"
 			href="/"
@@ -137,6 +137,11 @@ const nav = [
 		gap: 10px;
 		font-weight: 800;
 		letter-spacing: 0.2px;
+		min-width: 0;
+	}
+
+	.emoji {
+		flex: 0 0 auto;
 	}
 
 	.mark {
@@ -149,6 +154,10 @@ const nav = [
 
 	.name {
 		font-size: 15px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 42vw;
 	}
 
 	.nav {
@@ -178,6 +187,7 @@ const nav = [
 		display: inline-flex;
 		gap: 10px;
 		align-items: center;
+		flex: 0 0 auto;
 	}
 
 	.button-ghost {
@@ -249,6 +259,21 @@ const nav = [
 		}
 		.menu {
 			display: none;
+		}
+	}
+
+	@media (max-width: 420px) {
+		.emoji {
+			display: none;
+		}
+
+		.actions a.button-ghost {
+			display: none;
+		}
+
+		.header .button:not(.toggle) {
+			padding: 9px 10px;
+			font-size: 13px;
 		}
 	}
 </style>

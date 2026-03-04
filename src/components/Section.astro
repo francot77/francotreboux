@@ -22,7 +22,7 @@ const { title, subtitle, id } = Astro.props;
 
 <style>
 	.section {
-		padding: 66px 0;
+		padding: clamp(56px, 8vw, 84px) 0;
 	}
 
 	.heading {
@@ -33,7 +33,7 @@ const { title, subtitle, id } = Astro.props;
 
 	.title {
 		margin: 0;
-		font-size: 28px;
+		font-size: clamp(24px, 4vw, 34px);
 		letter-spacing: -0.5px;
 	}
 
@@ -43,13 +43,4 @@ const { title, subtitle, id } = Astro.props;
 		max-width: 70ch;
 	}
 
-	@media (min-width: 860px) {
-		.section {
-			padding: 84px 0;
-		}
-		.title {
-			font-size: 34px;
-		}
-	}
 </style>
-
