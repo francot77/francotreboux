@@ -51,7 +51,7 @@ export const prerender = true;
 				</div>
 			</div>
 
-			<div class="" data-reveal>
+			<div class="media" data-reveal>
 				<div class="avatar" aria-hidden="true">
 					<img src="/yopi.webp" alt="avatar" class="img-avatar" />
 				</div>
@@ -200,6 +200,11 @@ export const prerender = true;
 		display: grid;
 		gap: 18px;
 		align-items: start;
+	}
+
+	.media {
+		display: grid;
+		justify-items: center;
 	}
 
 	.dot {
@@ -397,6 +402,10 @@ export const prerender = true;
 		.inner {
 			grid-template-columns: 1.25fr 0.75fr;
 			align-items: center;
+		}
+
+		.media {
+			justify-items: end;
 		}
 		.title {
 			font-size: 56px;
