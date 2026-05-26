@@ -61,28 +61,6 @@ export const projects: Project[] = [
 			'Arquitectura preparada para multi-tenant',
 			'Enfoque en experiencia de usuario y conversión'
 		],
-	}, {
-		slug: 'lvm-web-app',
-		title: 'La Vagancia Montera',
-		description:
-			'Plataforma comunitaria para cazadores con gestión de cotos, guías, catálogo de productos, publicaciones con interacción social y chat en tiempo real.',
-		technologies: [
-			'Next.js',
-			'TypeScript',
-			'React',
-			'Supabase (Auth, Realtime, Postgres)',
-			'Tailwind'
-		],
-		links: {
-			demo: 'https://lvm-web-app.vercel.app/'
-		},
-		highlights: [
-			'Sistema de autenticación y permisos de usuario con Supabase Auth',
-			'Sección de publicaciones tipo foro con likes y comentarios',
-			'Chat en tiempo real utilizando las suscripciones de Supabase Realtime',
-			'Catálogo de productos y directorio de guías/cotos',
-			'Despliegue continuo en Vercel con optimización de rendimiento'
-		],
 	},
 	{
 		slug: 'delinteriorgshop',
