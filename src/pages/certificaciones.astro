@@ -1,25 +1,30 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Section from '../components/Section.astro';
-import Badge from '../components/Badge.astro';
-import { certifications } from '../data/certifications';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import Badge from "../components/Badge.astro";
+import { certifications } from "../data/certifications";
 
 export const prerender = true;
 ---
 
-<BaseLayout title="Certificaciones" description="Certificaciones con badges e insignias.">
-	<Section title="Certificaciones" subtitle="Badges e insignias verificables." id="certificaciones">
+<BaseLayout
+	title="Certificaciones"
+	description="Certificaciones con badges e insignias."
+>
+	<Section title="Certificaciones" id="certificaciones">
 		<div class="grid list">
-			{certifications.map((c) => (
-				<Badge
-					label={c.badgeLabel}
-					title={c.name}
-					subtitle={`${c.issuer} · ${c.year}`}
-					href={c.url}
-					imageSrc={c.image}
-					imageAlt={c.imageAlt}
-				/>
-			))}
+			{
+				certifications.map((c) => (
+					<Badge
+						label={c.badgeLabel}
+						title={c.name}
+						subtitle={`${c.issuer} · ${c.year}`}
+						href={c.url}
+						imageSrc={c.image}
+						imageAlt={c.imageAlt}
+					/>
+				))
+			}
 		</div>
 	</Section>
 </BaseLayout>

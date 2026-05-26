@@ -1,19 +1,28 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Section from '../components/Section.astro';
-import ContactForm from '../components/ContactForm.astro';
-import { SITE } from '../consts';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import ContactForm from "../components/ContactForm.astro";
+import { SITE } from "../consts";
 
-const sent = Astro.url.searchParams.get('enviado') === '1';
+const sent = Astro.url.searchParams.get("enviado") === "1";
 ---
 
-<BaseLayout title="Contacto" description="Formulario de contacto y enlaces a redes profesionales.">
-	<Section title="Contacto" subtitle="Escríbeme y conecta en redes profesionales." id="contacto">
+<BaseLayout
+	title="Contacto"
+	description="Formulario de contacto y enlaces a redes profesionales."
+>
+	<Section
+		title="Contacto"
+		subtitle="Escríbeme y conecta conmigo facilmente"
+		id="contacto"
+	>
 		{
 			sent ? (
 				<div class="notice" role="status" data-reveal>
-					<span class="noticeDot" aria-hidden="true"></span>
-					<span>Mensaje recibido. ¡Gracias! Te responderé pronto.</span>
+					<span class="noticeDot" aria-hidden="true" />
+					<span>
+						Mensaje recibido. ¡Gracias! Te responderé pronto.
+					</span>
 				</div>
 			) : null
 		}
@@ -21,7 +30,8 @@ const sent = Astro.url.searchParams.get('enviado') === '1';
 			<div class="card panel" data-reveal>
 				<h3 class="h3">Envíame un mensaje</h3>
 				<p class="muted">
-					Cuéntame sobre tu proyecto o la oportunidad. Respondo normalmente en 24–48 horas.
+					Cuéntame sobre tu proyecto o la oportunidad. Respondo
+					normalmente en 24–48 horas.
 				</p>
 				<ContactForm subjectTag="portfolio" />
 			</div>
@@ -29,17 +39,34 @@ const sent = Astro.url.searchParams.get('enviado') === '1';
 			<aside class="card aside" data-reveal>
 				<h3 class="h3">Enlaces</h3>
 				<div class="links">
-					<a class="button secondary" href={SITE.social.linkedin} target="_blank" rel="noreferrer">
+					<a
+						class="button secondary"
+						href={SITE.social.linkedin}
+						target="_blank"
+						rel="noreferrer"
+					>
 						LinkedIn
 					</a>
-					<a class="button secondary" href={SITE.social.github} target="_blank" rel="noreferrer">
+					<a
+						class="button secondary"
+						href={SITE.social.github}
+						target="_blank"
+						rel="noreferrer"
+					>
 						GitHub
 					</a>
-					{SITE.social.x ? (
-						<a class="button secondary" href={SITE.social.x} target="_blank" rel="noreferrer">
-							X
-						</a>
-					) : null}
+					{
+						SITE.social.x ? (
+							<a
+								class="button secondary"
+								href={SITE.social.x}
+								target="_blank"
+								rel="noreferrer"
+							>
+								X
+							</a>
+						) : null
+					}
 					<a class="button" href={`mailto:${SITE.email}`}>Email</a>
 				</div>
 				<div class="meta">
