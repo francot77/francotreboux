@@ -10,6 +10,9 @@ import { skillGroups } from "../data/skills";
 import { certifications } from "../data/certifications";
 import Badge from "../components/Badge.astro";
 import TechChip from "../components/TechChip.astro";
+import GitHubProfileCard from "../components/GitHubProfileCard.astro";
+import BrandIcon from "../components/BrandIcon.astro";
+import { siGithub } from "simple-icons";
 
 export const prerender = true;
 ---
@@ -44,8 +47,11 @@ export const prerender = true;
 					<a
 						href={SITE.social.github}
 						target="_blank"
-						rel="noreferrer">GitHub</a
+						rel="noreferrer"
 					>
+						<BrandIcon icon={siGithub} />
+						GitHub
+					</a>
 					<span aria-hidden="true">·</span>
 					<a href={`mailto:${SITE.email}`}>{SITE.email}</a>
 				</div>
@@ -92,31 +98,34 @@ export const prerender = true;
 		subtitle="Resumen, habilidades técnicas y formas de trabajo."
 		id="acerca"
 	>
-		<div class="about card" data-reveal>
-			<div class="text">
-				<p class="muted">
-					Trabajo desarrollando productos web con foco en rendimiento,
-					mantenibilidad y decisiones técnicas pragmáticas.
-				</p>
-				<p class="muted">
-					Busco soluciones simples que puedan escalar sin volverse
-					complejas innecesariamente
-				</p>
+		<div class="about-grid">
+			<div class="about card" data-reveal>
+				<div class="text">
+					<p class="muted">
+						Trabajo desarrollando productos web con foco en rendimiento,
+						mantenibilidad y decisiones técnicas pragmáticas.
+					</p>
+					<p class="muted">
+						Busco soluciones simples que puedan escalar sin volverse
+						complejas innecesariamente
+					</p>
+				</div>
+				<div class="skills">
+					{
+						skillGroups.map((g) => (
+							<div class="group">
+								<p class="groupTitle">{g.title}</p>
+								<ul class="pillList">
+									{g.items.map((i) => (
+										<TechChip label={i} />
+									))}
+								</ul>
+							</div>
+						))
+					}
+				</div>
 			</div>
-			<div class="skills">
-				{
-					skillGroups.map((g) => (
-						<div class="group">
-							<p class="groupTitle">{g.title}</p>
-							<ul class="pillList">
-								{g.items.map((i) => (
-									<TechChip label={i} />
-								))}
-							</ul>
-						</div>
-					))
-				}
-			</div>
+			<GitHubProfileCard />
 		</div>
 		<div class="more">
 			<a class="button secondary" href="/acerca">Ver más</a>
@@ -176,6 +185,7 @@ export const prerender = true;
 						target="_blank"
 						rel="noreferrer"
 					>
+						<BrandIcon icon={siGithub} />
 						GitHub
 					</a>
 					<a class="button" href="/contacto">Formulario</a>
@@ -323,6 +333,11 @@ export const prerender = true;
 		gap: 18px;
 	}
 
+	.about-grid {
+		display: grid;
+		gap: 18px;
+	}
+
 	.text {
 		display: grid;
 		gap: 10px;
@@ -418,6 +433,10 @@ export const prerender = true;
 		}
 		.about {
 			grid-template-columns: 1fr 1fr;
+			align-items: start;
+		}
+		.about-grid {
+			grid-template-columns: 1fr 0.7fr;
 			align-items: start;
 		}
 		.contact {

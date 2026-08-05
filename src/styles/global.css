@@ -120,13 +120,21 @@ svg {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 10px;
+    align-self: flex-start;
+    padding: 6px 10px;
+    min-height: 32px;
     border: 1px solid var(--border);
     border-radius: 999px;
     background: var(--surface);
     color: var(--muted);
     font-size: 13px;
-    line-height: 1;
+    line-height: 16px;
+    max-width: 100%;
+    white-space: normal;
+}
+
+.chip .label {
+    min-width: 0;
 }
 
 .techChip {

@@ -1,0 +1,171 @@
+---
+import TechChip from './TechChip.astro';
+import SoldProductGallery from './SoldProductGallery.astro';
+import ProjectMedia from './ProjectMedia.astro';
+import type { SoldProduct } from '../data/soldProducts';
+
+type Props = {
+	product: SoldProduct;
+};
+
+const { product } = Astro.props;
+const dialogId = `${product.slug}-screenshots`;
+const hasGallery = product.gallery?.length;
+const primaryAction = product.links?.demo ? 'demo' : hasGallery ? 'gallery' : null;
+---
+
+<article
+	class="card sold-product"
+	data-reveal
+	data-card-primary={primaryAction}
+	tabindex={primaryAction ? '0' : undefined}
+	role={primaryAction ? 'button' : undefined}
+	aria-label={primaryAction ? `Abrir acción principal de ${product.title}` : undefined}
+>
+	{product.coverImage ? (
+		<div class="cover">
+			<ProjectMedia image={product.coverImage} dialogId={hasGallery ? dialogId : undefined} />
+		</div>
+	) : null}
+	<div class="content">
+		<p class="eyebrow">{product.status}</p>
+		<h3 class="title">{product.title}</h3>
+		<p class="desc muted">{product.summary}</p>
+
+		<ul class="tech" aria-label={`Tecnologías de ${product.title}`}>
+			{product.technologies.map((technology) => <TechChip label={technology} />)}
+		</ul>
+
+		<ul class="highlights" aria-label={`Aspectos destacados de ${product.title}`}>
+			{product.outcome.map((highlight) => <li>{highlight}</li>)}
+		</ul>
+
+		<div class="actions">
+			{product.links?.demo ? (
+				<a class="button button-sm" data-card-primary="demo" href={product.links.demo} target="_blank" rel="noreferrer">
+					Ver demo
+				</a>
+			) : null}
+			{hasGallery ? (
+				<button
+					class="button button-sm"
+					data-card-primary="gallery"
+					type="button"
+					data-gallery-open
+					aria-controls={dialogId}
+					aria-haspopup="dialog"
+				>
+					Ver capturas de pantalla
+				</button>
+			) : null}
+		</div>
+	</div>
+	{hasGallery ? <SoldProductGallery title={product.title} gallery={product.gallery!} dialogId={dialogId} /> : null}
+</article>
+
+<style>
+	.sold-product {
+		display: grid;
+		gap: 0;
+		overflow: hidden;
+	}
+
+	.cover {
+		border-bottom: 1px solid var(--border);
+	}
+
+	.content {
+		display: grid;
+		gap: 16px;
+		padding: 20px;
+	}
+
+	.eyebrow {
+		margin: 0;
+		color: var(--accent-2);
+		font-size: 12px;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.title,
+	.desc {
+		margin: 0;
+	}
+
+	.title {
+		font-size: 22px;
+		letter-spacing: -0.3px;
+	}
+
+	.desc {
+		font-size: 15px;
+		max-width: 70ch;
+	}
+
+	.tech {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: 8px;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	.highlights {
+		display: grid;
+		gap: 8px;
+		padding: 0;
+		margin: 0;
+		color: var(--muted);
+		font-size: 14px;
+		list-style: none;
+	}
+
+	.highlights li {
+		display: flex;
+		gap: 10px;
+		align-items: flex-start;
+	}
+
+	.highlights li::before {
+		content: '';
+		width: 8px;
+		height: 8px;
+		margin-top: 6px;
+		border-radius: 999px;
+		background: linear-gradient(135deg, var(--accent), var(--accent-2));
+		flex: 0 0 auto;
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.button-sm {
+		padding: 9px 11px;
+		font-size: 13px;
+	}
+</style>
+
+<script>
+	if (!document.documentElement.dataset.cardPrimaryActions) {
+		document.documentElement.dataset.cardPrimaryActions = 'true';
+		document.addEventListener('click', (event) => {
+			const card = (event.target as Element).closest<HTMLElement>('[data-card-primary]');
+			if (!card || (event.target as Element).closest('a, button, input, select, textarea, summary')) return;
+			card.querySelector<HTMLElement>(`[data-card-primary="${card.dataset.cardPrimary}"]`)?.click();
+		});
+		document.addEventListener('keydown', (event) => {
+			if (event.key !== 'Enter' && event.key !== ' ') return;
+			const card = event.target as HTMLElement;
+			if (!card.matches('[data-card-primary]')) return;
+			event.preventDefault();
+			card.querySelector<HTMLElement>(`[data-card-primary="${card.dataset.cardPrimary}"]`)?.click();
+		});
+	}
+</script>

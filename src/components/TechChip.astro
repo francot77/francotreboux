@@ -1,9 +1,14 @@
 ---
 import type { SimpleIcon } from "simple-icons";
 import {
+	siArduino,
 	siAstro,
+	siCplusplus,
 	siCloudflare,
 	siCss,
+	siDotnet,
+	siElectron,
+	siEspressif,
 	siExpo,
 	siGit,
 	siHtml5,
@@ -36,6 +41,11 @@ const { label } = Astro.props;
 
 const techIcons: Record<string, SimpleIcon> = {
 	Astro: siAstro,
+	Arduino: siArduino,
+	Cplusplus: siCplusplus,
+	Dotnet: siDotnet,
+	Electron: siElectron,
+	Espressif: siEspressif,
 	"Next.js": siNextdotjs,
 	TypeScript: siTypescript,
 	JavaScript: siJavascript,
@@ -64,6 +74,9 @@ const techIcons: Record<string, SimpleIcon> = {
 
 function resolveTechIcon(tech: string): SimpleIcon | undefined {
 	if (techIcons[tech]) return techIcons[tech];
+	if (tech === "C#" || tech === ".NET 8") return techIcons.Dotnet;
+	if (tech === "Arduino/C++") return techIcons.Cplusplus;
+	if (tech === "ESP32-S3") return techIcons.Espressif;
 	if (tech === "Cloudflare Edge") return techIcons.Cloudflare;
 	if (tech === "Tailwind") return techIcons["Tailwind CSS"];
 	if (tech.startsWith("Supabase")) return techIcons.Supabase;

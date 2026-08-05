@@ -1,6 +1,8 @@
 ---
 import { SITE } from "../consts";
 import ThemeToggle from "./ThemeToggle.astro";
+import { siGithub } from "simple-icons";
+import BrandIcon from "./BrandIcon.astro";
 
 const nav = [
 	{ href: "/", label: "Inicio" },
@@ -53,6 +55,7 @@ const nav = [
 				target="_blank"
 				rel="noreferrer"
 			>
+				<BrandIcon icon={siGithub} />
 				GitHub
 			</a>
 			<ThemeToggle />

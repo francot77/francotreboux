@@ -3,6 +3,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Section from "../components/Section.astro";
 import ContactForm from "../components/ContactForm.astro";
 import { SITE } from "../consts";
+import { siGithub } from "simple-icons";
+import BrandIcon from "../components/BrandIcon.astro";
 
 const sent = Astro.url.searchParams.get("enviado") === "1";
 ---
@@ -53,6 +55,7 @@ const sent = Astro.url.searchParams.get("enviado") === "1";
 						target="_blank"
 						rel="noreferrer"
 					>
+						<BrandIcon icon={siGithub} />
 						GitHub
 					</a>
 					{

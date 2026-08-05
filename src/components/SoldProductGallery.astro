@@ -1,0 +1,222 @@
+---
+import type { SoldProductImage } from '../data/soldProducts';
+
+type Props = {
+	title: string;
+	gallery: SoldProductImage[];
+	dialogId: string;
+};
+
+const { title, gallery, dialogId } = Astro.props;
+---
+
+<dialog
+	class="gallery-dialog"
+	id={dialogId}
+	aria-label={`Vista previa de ${title}`}
+	data-gallery
+	data-gallery-items={JSON.stringify(gallery.map(({ src, alt, width, height }) => ({ src, alt, width, height })))}
+>
+	<div class="gallery-panel">
+		<button class="button close" type="button" data-gallery-close aria-label="Cerrar vista previa">
+			<span aria-hidden="true">×</span>
+		</button>
+
+		<div class:list={['viewer', { single: gallery.length === 1 }]}>
+			{gallery.length > 1 ? (
+				<button class="button navigation previous" type="button" data-gallery-previous aria-label="Imagen anterior">
+					<span aria-hidden="true">←</span>
+				</button>
+			) : null}
+			<div class="image-frame">
+				<img
+					src={gallery[0].src}
+					alt={gallery[0].alt}
+					width={gallery[0].width}
+					height={gallery[0].height}
+					data-gallery-image
+				/>
+			</div>
+			{gallery.length > 1 ? (
+				<button class="button navigation next" type="button" data-gallery-next aria-label="Imagen siguiente">
+					<span aria-hidden="true">→</span>
+				</button>
+			) : null}
+		</div>
+	</div>
+</dialog>
+
+<script>
+	const galleries = document.querySelectorAll<HTMLElement>('[data-gallery]');
+
+	for (const gallery of galleries) {
+		const dialog = gallery as HTMLDialogElement;
+		const openButtons = Array.from(
+			gallery.closest('[data-reveal]')?.querySelectorAll<HTMLButtonElement>('[data-gallery-open]') ?? [],
+		);
+		const closeButton = gallery.querySelector<HTMLButtonElement>('[data-gallery-close]');
+		const image = gallery.querySelector<HTMLImageElement>('[data-gallery-image]');
+		const items = JSON.parse(gallery.dataset.galleryItems ?? '[]') as Array<{
+			src: string;
+			alt: string;
+			width: number;
+			height: number;
+		}>;
+		const previous = gallery.querySelector<HTMLButtonElement>('[data-gallery-previous]');
+		const next = gallery.querySelector<HTMLButtonElement>('[data-gallery-next]');
+		let activeIndex = 0;
+		let restoreFocusTo: HTMLElement | null = null;
+
+		const showImage = (index: number) => {
+			activeIndex = (index + items.length) % items.length;
+			const item = items[activeIndex];
+			if (!item || !image) return;
+			image.src = item.src;
+			image.alt = item.alt;
+			image.width = item.width;
+			image.height = item.height;
+		};
+
+		for (const openButton of openButtons) openButton.addEventListener('click', () => {
+			restoreFocusTo = openButton;
+			showImage(0);
+			dialog.showModal();
+			closeButton?.focus();
+		});
+		closeButton?.addEventListener('click', () => dialog.close());
+		previous?.addEventListener('click', () => showImage(activeIndex - 1));
+		next?.addEventListener('click', () => showImage(activeIndex + 1));
+		gallery.addEventListener('keydown', (event) => {
+			if (items.length > 1 && event.key === 'ArrowLeft') showImage(activeIndex - 1);
+			if (items.length > 1 && event.key === 'ArrowRight') showImage(activeIndex + 1);
+		});
+		gallery.addEventListener('click', (event) => {
+			if (event.target === gallery) dialog.close();
+		});
+		dialog.addEventListener('close', () => {
+			restoreFocusTo?.focus();
+			restoreFocusTo = null;
+		});
+	}
+</script>
+
+<style>
+	.gallery-dialog {
+		box-sizing: border-box;
+		width: calc(100vw - 32px);
+		height: calc(100vh - 32px);
+		max-width: none;
+		max-height: none;
+		padding: 0;
+		border: 0;
+		border-radius: var(--radius);
+		background: var(--bg);
+		color: var(--text);
+		box-shadow: var(--shadow);
+		overflow: hidden;
+	}
+
+	.gallery-dialog::backdrop {
+		background: rgba(0, 0, 0, 0.78);
+	}
+
+	.gallery-panel {
+		position: relative;
+		box-sizing: border-box;
+		height: 100%;
+		padding: 16px;
+		display: grid;
+		grid-template-rows: minmax(0, 1fr);
+		overflow: hidden;
+	}
+
+	.close {
+		position: absolute;
+		top: 16px;
+		right: 16px;
+		z-index: 1;
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		font-size: 26px;
+		line-height: 1;
+	}
+
+	.viewer {
+		position: relative;
+		min-height: 0;
+		overflow: hidden;
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		gap: 12px;
+		align-items: center;
+	}
+
+	.viewer.single {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.image-frame {
+		min-width: 0;
+		min-height: 0;
+		width: 100%;
+		height: 100%;
+		display: grid;
+		place-items: center;
+	}
+
+	.image-frame img {
+		max-width: 100%;
+		max-height: calc(100vh - 64px);
+		width: auto;
+		height: auto;
+		object-fit: contain;
+		border-radius: 6px;
+	}
+
+	.navigation {
+		width: 42px;
+		height: 42px;
+		padding: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.gallery-dialog,
+		.gallery-dialog::backdrop {
+			animation: none;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.gallery-dialog {
+			width: calc(100vw - 16px);
+			height: calc(100vh - 16px);
+		}
+
+		.gallery-panel {
+			padding: 8px;
+		}
+
+		.image-frame img {
+			max-height: calc(100vh - 32px);
+		}
+
+		.viewer {
+			grid-template-columns: 1fr;
+		}
+
+		.navigation {
+			position: absolute;
+			top: 50%;
+			z-index: 1;
+		}
+
+		.previous {
+			left: 18px;
+		}
+
+		.next {
+			right: 18px;
+		}
+	}
+</style>

@@ -1,0 +1,122 @@
+---
+import { siGithub } from "simple-icons";
+import BrandIcon from "./BrandIcon.astro";
+
+const profile = {
+	name: "Franco Treboux",
+	bio: "Full Stack Developer",
+	location: "Argentina",
+	repositories: 33,
+	url: "https://github.com/francot77",
+	avatar: "https://avatars.githubusercontent.com/u/69086232?v=4",
+};
+---
+
+<a
+	class="card githubProfile"
+	href={profile.url}
+	target="_blank"
+	rel="noopener noreferrer"
+	aria-label={`Ver el perfil de GitHub de ${profile.name}`}
+	data-reveal
+>
+	<img
+		class="avatar"
+		src={profile.avatar}
+		alt={`Avatar de ${profile.name}`}
+		width="460"
+		height="460"
+		loading="lazy"
+	/>
+	<div class="content">
+		<div class="heading">
+			<BrandIcon icon={siGithub} />
+			<h3>{profile.name}</h3>
+		</div>
+		<p class="bio muted">{profile.bio}</p>
+		<div class="details muted">
+			<span>{profile.location}</span>
+			<span aria-hidden="true">·</span>
+			<span>{profile.repositories} repositorios públicos</span>
+		</div>
+	</div>
+</a>
+
+<style>
+	.githubProfile {
+		display: grid;
+		gap: 14px;
+		justify-items: center;
+		padding: 18px;
+		color: inherit;
+		transition: transform 180ms var(--ease), border-color 180ms var(--ease), background 180ms var(--ease);
+	}
+
+	.githubProfile:hover {
+		transform: translateY(-2px);
+		border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+		background: linear-gradient(180deg, color-mix(in oklab, var(--surface) 70%, transparent), transparent);
+		text-decoration: none;
+	}
+
+	.githubProfile:focus-visible {
+		outline: 3px solid var(--accent);
+		outline-offset: 3px;
+	}
+
+	.avatar {
+		width: 96px;
+		height: 96px;
+		aspect-ratio: 1 / 1;
+		border-radius: 24%;
+		object-fit: cover;
+	}
+
+	.content {
+		min-width: 0;
+		width: 100%;
+		display: grid;
+		gap: 6px;
+		justify-items: center;
+	}
+
+	.heading {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.heading :global(.brandIcon) {
+		font-size: 20px;
+	}
+
+	h3,
+	.bio,
+	.details {
+		margin: 0;
+	}
+
+	h3 {
+		font-size: 18px;
+		letter-spacing: -0.2px;
+	}
+
+	.bio {
+		font-size: 14px;
+	}
+
+	.details {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		font-size: 13px;
+		justify-content: center;
+	}
+
+	@media (max-width: 420px) {
+		.avatar {
+			width: 72px;
+			height: 72px;
+		}
+	}
+</style>

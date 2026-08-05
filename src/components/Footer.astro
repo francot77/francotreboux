@@ -1,5 +1,7 @@
 ---
 import { SITE } from '../consts';
+import { siGithub } from 'simple-icons';
+import BrandIcon from './BrandIcon.astro';
 const year = new Date().getFullYear();
 ---
 
@@ -8,7 +10,7 @@ const year = new Date().getFullYear();
 		<p class="muted">© {year} {SITE.name}. Hecho con Astro.</p>
 		<div class="links">
 			<a href={SITE.social.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
-			<a href={SITE.social.github} target="_blank" rel="noreferrer">GitHub</a>
+			<a href={SITE.social.github} target="_blank" rel="noreferrer"><BrandIcon icon={siGithub} />GitHub</a>
 			{SITE.social.x ? (
 				<a href={SITE.social.x} target="_blank" rel="noreferrer">
 					X

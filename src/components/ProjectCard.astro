@@ -1,6 +1,10 @@
 ---
 import type { Project } from "../data/projects";
 import TechChip from "./TechChip.astro";
+import SoldProductGallery from "./SoldProductGallery.astro";
+import ProjectMedia from "./ProjectMedia.astro";
+import { siGithub } from "simple-icons";
+import BrandIcon from "./BrandIcon.astro";
 
 type Props = {
 	project: Project;
@@ -8,9 +12,28 @@ type Props = {
 
 const { project } = Astro.props;
 const { title, description, technologies, links, highlights } = project;
+const dialogId = `${project.slug}-screenshots`;
+const gallery = project.coverImage
+	? [{ ...project.coverImage, caption: `Vista principal de ${title}` }]
+	: [];
+const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStudy ? 'case-study' : null;
 ---
 
-<article class="card project" data-reveal>
+<article
+	class="card project"
+	data-reveal
+	data-card-primary={primaryAction}
+	tabindex={primaryAction ? '0' : undefined}
+	role={primaryAction ? 'button' : undefined}
+	aria-label={primaryAction ? `Abrir acción principal de ${title}` : undefined}
+>
+	{
+		project.coverImage ? (
+			<div class="cover">
+				<ProjectMedia image={project.coverImage} dialogId={dialogId} />
+			</div>
+		) : null
+	}
 	<div class="top">
 		<h3 class="title">{title}</h3>
 		<p class="desc muted">{description}</p>
@@ -28,6 +51,7 @@ const { title, description, technologies, links, highlights } = project;
 				links.demo ? (
 					<a
 						class="button button-sm"
+						data-card-primary="demo"
 						href={links.demo}
 						target="_blank"
 						rel="noreferrer"
@@ -40,17 +64,19 @@ const { title, description, technologies, links, highlights } = project;
 				links.repo ? (
 					<a
 						class="button button-sm"
+						data-card-primary="repo"
 						href={links.repo}
 						target="_blank"
 						rel="noreferrer"
 					>
+						<BrandIcon icon={siGithub} />
 						Repositorio
 					</a>
 				) : null
 			}
 			{
 				links.caseStudy ? (
-					<a class="button button-sm" href={links.caseStudy}>
+					<a class="button button-sm" data-card-primary="case-study" href={links.caseStudy}>
 						Detalle
 					</a>
 				) : null
@@ -69,9 +95,11 @@ const { title, description, technologies, links, highlights } = project;
 	}
 </article>
 
+{gallery.length ? <SoldProductGallery title={title} gallery={gallery} dialogId={dialogId} /> : null}
+
 <style>
 	.project {
-		padding: 18px;
+		padding: 20px;
 		display: grid;
 		gap: 16px;
 		transition:
@@ -114,6 +142,7 @@ const { title, description, technologies, links, highlights } = project;
 	.tech {
 		display: flex;
 		flex-wrap: wrap;
+		align-items: flex-start;
 		gap: 8px;
 		padding: 0;
 		margin: 0;
@@ -158,3 +187,21 @@ const { title, description, technologies, links, highlights } = project;
 		flex: 0 0 auto;
 	}
 </style>
+
+<script>
+	if (!document.documentElement.dataset.cardPrimaryActions) {
+		document.documentElement.dataset.cardPrimaryActions = 'true';
+		document.addEventListener('click', (event) => {
+			const card = (event.target as Element).closest<HTMLElement>('[data-card-primary]');
+			if (!card || (event.target as Element).closest('a, button, input, select, textarea, summary')) return;
+			card.querySelector<HTMLElement>(`[data-card-primary="${card.dataset.cardPrimary}"]`)?.click();
+		});
+		document.addEventListener('keydown', (event) => {
+			if (event.key !== 'Enter' && event.key !== ' ') return;
+			const card = event.target as HTMLElement;
+			if (!card.matches('[data-card-primary]')) return;
+			event.preventDefault();
+			card.querySelector<HTMLElement>(`[data-card-primary="${card.dataset.cardPrimary}"]`)?.click();
+		});
+	}
+</script>

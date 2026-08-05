@@ -3,6 +3,12 @@ export type Project = {
 	title: string;
 	description: string;
 	technologies: string[];
+	coverImage?: {
+		src: string;
+		alt: string;
+		width: number;
+		height: number;
+	};
 	links: {
 		demo?: string;
 		repo?: string;
@@ -63,23 +69,19 @@ export const projects: Project[] = [
 		],
 	},
 	{
-		slug: 'delinteriorgshop',
-		title: 'Del Interior GShop',
+		slug: 'formulawheelbridge',
+		title: 'FormulaWheelBridge',
 		description:
-			'E-commerce para tienda física con integración de pasarela de pago y optimización para posicionamiento orgánico.',
-		technologies: [
-			'WordPress',
-			'WooCommerce',
-			'MercadoPago API',
-			'SEO'
-		],
-		links: {
-			demo: 'https://delinteriorgrowshop.com.ar'
+			'Convierte los controles de un volante casero en un gamepad inalámbrico para Windows.',
+		technologies: ['C#', '.NET 8', 'WinForms', 'ESP32-S3', 'Arduino/C++', 'Wi-Fi/UDP', 'vJoy'],
+		coverImage: {
+			src: '/projects/formulawheelbridge/screenshot.png',
+			alt: 'Panel de FormulaWheelBridge mostrando las entradas del volante y la conexión con vJoy',
+			width: 895,
+			height: 920,
 		},
-		highlights: [
-			'Implementación de tienda online con catálogo dinámico',
-			'Integración de pagos mediante MercadoPago',
-			'Optimización técnica y de contenido para buscadores'
-		],
+		links: {
+			repo: 'https://github.com/francot77/FormulaWheelBridge',
+		},
 	},
 ];
