@@ -5,18 +5,18 @@ Portfolio moderno y minimalista construido con Astro. Incluye páginas de inicio
 ## Requisitos
 
 - Node.js 18+ (recomendado 20+)
-- npm 9+
+- pnpm 11+
 
 ## Instalación
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Desarrollo
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Abre `http://localhost:4321`.
@@ -24,20 +24,20 @@ Abre `http://localhost:4321`.
 ## Build y preview
 
 ```bash
-npm run build
-npm run preview
+pnpm run build
+pnpm run preview
 ```
 
 ## Typecheck
 
 ```bash
-npm run typecheck
+pnpm run typecheck
 ```
 
 ## Tests
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 ## Configuración del sitio
@@ -71,7 +71,7 @@ Este proyecto usa `@astrojs/node` en modo `standalone` para soportar el endpoint
 1. Ejecuta el build:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 2. Arranca el servidor:
