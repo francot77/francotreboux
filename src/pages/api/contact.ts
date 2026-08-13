@@ -13,6 +13,37 @@ type ContactPayload = {
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
+const PRODUCTION_SITE_ORIGIN = 'https://francotreboux.vercel.app';
+
+function originFromUrl(value: string | undefined): string | undefined {
+	if (!value) return undefined;
+	try {
+		return new URL(value.includes('://') ? value : `https://${value}`).origin.toLowerCase();
+	} catch {
+		return undefined;
+	}
+}
+
+function allowedContactOrigins(request: Request): Set<string> {
+	const allowed = new Set<string>([PRODUCTION_SITE_ORIGIN]);
+	const configuredSite = originFromUrl(process.env.SITE_URL);
+	const vercelDeployment = originFromUrl(process.env.VERCEL_URL);
+	if (configuredSite) allowed.add(configuredSite);
+	if (vercelDeployment) allowed.add(vercelDeployment);
+
+	if (process.env.NODE_ENV !== 'production') {
+		for (const origin of [originFromUrl(request.url), originFromUrl(request.headers.get('origin') ?? undefined)]) {
+			if (origin && /^(localhost|127\.0\.0\.1|::1)$/.test(new URL(origin).hostname)) allowed.add(origin);
+		}
+	}
+
+	return allowed;
+}
+
+function isAllowedContactOrigin(request: Request): boolean {
+	const origin = originFromUrl(request.headers.get('origin')?.trim());
+	return origin === PRODUCTION_SITE_ORIGIN || (origin !== undefined && allowedContactOrigins(request).has(origin));
+}
 
 function asString(value: unknown): string {
 	if (typeof value === 'string') return value;
@@ -106,6 +137,13 @@ async function sendEmail(payload: ContactPayload): Promise<DeliveryResult> {
 }
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
+	if (!isAllowedContactOrigin(request)) {
+		return new Response(JSON.stringify({ ok: false, message: 'Forbidden origin.' }), {
+			status: 403,
+			headers: { 'Content-Type': 'application/json' },
+		});
+	}
+
 	const key = clientAddress ?? 'unknown';
 	if (!rateLimitCheck(key)) {
 		return new Response(JSON.stringify({ ok: false, message: 'Demasiados intentos. Intenta más tarde.' }), {
