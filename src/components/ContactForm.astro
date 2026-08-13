@@ -63,12 +63,11 @@ const english = locale === 'en';
 				setStatus(english ? 'Sending…' : 'Enviando…');
 			const submitButton = form.querySelector('button[type="submit"]');
 			if (submitButton instanceof HTMLButtonElement) submitButton.disabled = true;
-			try {
-			const res = await fetch('/api/contact', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(Object.fromEntries(new FormData(form))),
-				});
+				try {
+				const res = await fetch('/api/contact', {
+						method: 'POST',
+						body: new URLSearchParams([...new FormData(form)].map(([key, value]) => [key, String(value)])),
+					});
 			if (res.status === 404 || res.status === 405 || res.status === 501) {
 				if (submitButton instanceof HTMLButtonElement) submitButton.disabled = false;
 				form.submit();

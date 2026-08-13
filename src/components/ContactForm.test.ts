@@ -19,6 +19,15 @@ describe('ContactForm', () => {
 		expect(fragment.querySelector('input[name="website"]')).not.toBeNull();
 	});
 
+	it('submits URL-encoded data without a JSON preflight trigger', async () => {
+		const fragment = await renderAstro(ContactForm);
+		const script = [...fragment.querySelectorAll('script')].map((element) => element.textContent ?? '').join('\n');
+
+		expect(script).toContain('new URLSearchParams([...new FormData(form)]');
+		expect(script).not.toContain("'Content-Type': 'application/json'");
+		expect(script).not.toContain('JSON.stringify');
+	});
+
 	it('renders English action, route, and locale field', async () => {
 		const fragment = await renderAstro(ContactForm, { props: { locale: 'en' } });
 		expect(fragment.querySelector('form')?.getAttribute('action')).toBe('/en/contact?enviado=1');
