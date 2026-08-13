@@ -1,30 +1,35 @@
 ---
 import type { SoldProductImage } from '../data/soldProducts';
+import type { Locale } from '../i18n/localization';
 
 type Props = {
 	title: string;
 	gallery: SoldProductImage[];
 	dialogId: string;
+	locale?: Locale;
 };
 
-const { title, gallery, dialogId } = Astro.props;
+const { title, gallery, dialogId, locale = 'es' } = Astro.props;
+const labels = locale === 'en'
+	? { preview: 'Preview of', close: 'Close preview', previous: 'Previous image', next: 'Next image' }
+	: { preview: 'Vista previa', close: 'Cerrar vista previa', previous: 'Imagen anterior', next: 'Imagen siguiente' };
 ---
 
 <dialog
 	class="gallery-dialog"
 	id={dialogId}
-	aria-label={`Vista previa de ${title}`}
+	aria-label={`${labels.preview}${locale === 'en' ? ' ' : ' de '}${title}`}
 	data-gallery
 	data-gallery-items={JSON.stringify(gallery.map(({ src, alt, width, height }) => ({ src, alt, width, height })))}
 >
 	<div class="gallery-panel">
-		<button class="button close" type="button" data-gallery-close aria-label="Cerrar vista previa">
+		<button class="button close" type="button" data-gallery-close aria-label={labels.close}>
 			<span aria-hidden="true">×</span>
 		</button>
 
 		<div class:list={['viewer', { single: gallery.length === 1 }]}>
 			{gallery.length > 1 ? (
-				<button class="button navigation previous" type="button" data-gallery-previous aria-label="Imagen anterior">
+					<button class="button navigation previous" type="button" data-gallery-previous aria-label={labels.previous}>
 					<span aria-hidden="true">←</span>
 				</button>
 			) : null}
@@ -38,7 +43,7 @@ const { title, gallery, dialogId } = Astro.props;
 				/>
 			</div>
 			{gallery.length > 1 ? (
-				<button class="button navigation next" type="button" data-gallery-next aria-label="Imagen siguiente">
+					<button class="button navigation next" type="button" data-gallery-next aria-label={labels.next}>
 					<span aria-hidden="true">→</span>
 				</button>
 			) : null}

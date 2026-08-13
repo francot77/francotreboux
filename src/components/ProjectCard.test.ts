@@ -102,4 +102,33 @@ describe('ProjectCard', () => {
 			'https://github.com/example/repo',
 		);
 	});
+
+	it('localizes visible captions and labels in English', async () => {
+		const fragment = await renderAstro(ProjectCard, {
+			props: {
+				locale: 'en',
+				project: { slug: 'formulawheelbridge', title: 'FormulaWheelBridge', description: 'Brief description.', technologies: [], links: { demo: 'https://example.com' }, coverImage: { src: '/demo.png', alt: 'Demo screenshot', width: 100, height: 100 } },
+			},
+		});
+
+		expect(fragment.querySelector('article')?.getAttribute('aria-label')).toContain('Open primary action for');
+		expect(fragment.querySelector('.actions')?.getAttribute('aria-label')).toBe('Project links');
+		expect(fragment.querySelector('[data-gallery-open]')?.getAttribute('aria-label')).toBe(
+			'Enlarge image: FormulaWheelBridge panel showing wheel inputs and the vJoy connection',
+		);
+		expect(fragment.querySelector('dialog')?.getAttribute('aria-label')).toBe('Preview of FormulaWheelBridge');
+	});
+
+	it('renders an accessible localized case-study modal without inline expansion', async () => {
+		const fragment = await renderAstro(ProjectCard, {
+			props: { project: (await import('../data/projects')).projects[0], locale: 'en' },
+		});
+
+		expect(fragment.querySelector('details.case-study')).toBeNull();
+		expect(fragment.querySelector('[data-case-study-open]')?.textContent).toContain('Case study');
+		expect(fragment.querySelector('dialog[data-case-study-dialog]')).not.toBeNull();
+		expect(fragment.querySelector('[data-case-study-close]')?.getAttribute('aria-label')).toBe('Close case study');
+		expect(fragment.querySelector('.case-study-content')?.textContent).toContain('Architecture');
+		expect(fragment.querySelector('.case-study-content')?.textContent).toContain('RabbitMQ');
+	});
 });

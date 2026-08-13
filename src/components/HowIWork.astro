@@ -1,0 +1,76 @@
+---
+import { getCopy, type Locale } from '../i18n/localization';
+
+type Props = { locale: Locale };
+const { locale } = Astro.props;
+const copy = getCopy(locale).howIWork;
+---
+
+
+<div class="how-i-work" data-how-i-work data-steps={JSON.stringify(copy.steps)} data-step-label={copy.stepLabel} data-reveal>
+	<article class="step-card card" aria-live="polite" data-step-card tabindex="0">
+		<p class="eyebrow">{copy.stepLabel} <span data-current>1</span></p>
+		<h3 data-step-title>{copy.steps[0].title}</h3>
+		<p class="description" data-step-description>{copy.steps[0].description}</p>
+	</article>
+	<div class="controls">
+		<button class="button secondary" type="button" data-previous aria-label={copy.previous}>← <span>{copy.previous}</span></button>
+		<div class="progress" aria-label={`${copy.stepLabel} 1 / ${copy.steps.length}`} role="img">
+			{copy.steps.map((_, index) => <span class="progress-dot" data-progress={index} aria-hidden="true" class:list={{ current: index === 0 }}></span>)}
+			<span class="position"><span data-position>1</span> / {copy.steps.length}</span>
+		</div>
+		<button class="button secondary" type="button" data-next aria-label={copy.next}><span>{copy.next}</span> →</button>
+	</div>
+</div>
+
+<script>
+	const workflow = document.querySelector<HTMLElement>('[data-how-i-work]');
+	if (workflow) {
+		const card = workflow.querySelector<HTMLElement>('[data-step-card]');
+		const title = workflow.querySelector<HTMLElement>('[data-step-title]');
+		const description = workflow.querySelector<HTMLElement>('[data-step-description]');
+		const current = workflow.querySelector<HTMLElement>('[data-current]');
+		const position = workflow.querySelector<HTMLElement>('[data-position]');
+		const progress = [...workflow.querySelectorAll<HTMLElement>('[data-progress]')];
+		const previous = workflow.querySelector<HTMLButtonElement>('[data-previous]');
+		const next = workflow.querySelector<HTMLButtonElement>('[data-next]');
+		const steps = JSON.parse(workflow.dataset.steps ?? '[]') as { title: string; description: string }[];
+		let active = 0;
+
+		const selectStep = (index: number, moveFocus = false) => {
+			active = (index + steps.length) % steps.length;
+			if (title) title.textContent = steps[active].title;
+			if (description) description.textContent = steps[active].description;
+			if (current) current.textContent = String(active + 1);
+			if (position) position.textContent = String(active + 1);
+			progress.forEach((dot, index) => dot.classList.toggle('current', index === active));
+			workflow.querySelector<HTMLElement>('.progress')?.setAttribute('aria-label', `${workflow.dataset.stepLabel} ${active + 1} / ${steps.length}`);
+			if (moveFocus) (active === 0 ? previous : next)?.focus();
+		};
+
+		previous?.addEventListener('click', () => selectStep(active - 1));
+		next?.addEventListener('click', () => selectStep(active + 1));
+		card?.addEventListener('keydown', (event) => {
+			if (event.key === 'ArrowLeft') { event.preventDefault(); selectStep(active - 1, true); }
+			if (event.key === 'ArrowRight') { event.preventDefault(); selectStep(active + 1, true); }
+		});
+	}
+</script>
+
+<style>
+	.how-i-work { display: grid; gap: 14px; }
+	.step-card { min-height: 250px; padding: clamp(20px, 4vw, 34px); display: grid; align-content: center; gap: 10px; }
+	.eyebrow { margin: 0; color: var(--accent); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
+	.step-card h3 { margin: 0; font-size: clamp(26px, 4vw, 36px); letter-spacing: -0.6px; }
+	.description { margin: 0; color: var(--muted); font-size: clamp(17px, 2vw, 20px); line-height: 1.55; }
+	.controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+	.progress { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 14px; font-weight: 800; }
+	.progress-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+	.progress-dot.current { background: var(--accent); }
+	.position { color: var(--muted); font-size: 14px; font-weight: 800; }
+	.step-card:focus-visible, .button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+	@media (max-width: 620px) {
+		.step-card { min-height: 280px; }
+		.controls .button span { display: none; }
+	}
+</style>

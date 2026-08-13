@@ -12,8 +12,8 @@ import { soldProducts } from '../data/soldProducts';
 import Badge from '../components/Badge.astro';
 import SoldProductCard from '../components/SoldProductCard.astro';
 import TechChip from '../components/TechChip.astro';
-import { SITE } from '../consts';
-import { getCopy, type Locale, type PageId, equivalentUrl, localizeCertifications } from '../i18n/localization';
+import HomePage from '../components/HomePage.astro';
+import { getCopy, type Locale, type PageId, localizeCertifications } from '../i18n/localization';
 
 type Props = { locale: Locale; pageId: PageId };
 const { locale, pageId } = Astro.props;
@@ -27,11 +27,7 @@ const sent = pageId === 'contact' && Astro.url.searchParams.get('enviado') === '
 
 <BaseLayout title={labels.title} locale={locale} pageId={pageId}>
 	{pageId === 'home' ? (
-		<>
-			<section class="hero"><div class="container"><p class="chip">{SITE.location}</p><h1>{SITE.name}</h1><p class="lead muted">{SITE.role}. {labels.intro}</p><div class="cta"><a class="button" href={equivalentUrl('projects', locale)}>{copy.nav.projects}</a><a class="button secondary" href={equivalentUrl('contact', locale)}>{copy.nav.contact}</a></div></div></section>
-			<Section title={copy.nav.projects}><div class="grid">{projects.slice(0, 2).map((project) => <ProjectCard project={project} locale={locale} />)}</div></Section>
-			<Section title={copy.nav.experience}><Timeline items={experience} locale={locale} /></Section>
-		</>
+			<HomePage locale={locale} />
 	) : pageId === 'projects' ? (
 		<><Section title={copy.nav.projects}><div class="grid">{projects.map((project) => <ProjectCard project={project} locale={locale} />)}</div></Section><Section title={english ? 'Commercial products' : 'Productos comerciales'}><div class="grid">{soldProducts.map((product) => <SoldProductCard product={product} locale={locale} />)}</div></Section></>
 	) : pageId === 'experience' ? (

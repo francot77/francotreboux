@@ -15,10 +15,12 @@ type Props = {
 const { project, locale = 'es' } = Astro.props;
 	const { title, technologies, links } = project;
 		const localizedProject = localizeProjects(locale, [project])[0];
-		const { description, highlights } = localizedProject;
+	const { description, highlights } = localizedProject;
+const caseStudy = localizedProject.caseStudy;
 const dialogId = `${project.slug}-screenshots`;
+const caseStudyDialogId = `${project.slug}-case-study`;
 const gallery = project.coverImage
-	? [{ ...project.coverImage, caption: `Vista principal de ${title}` }]
+	? [{ ...localizedProject.coverImage!, caption: locale === 'en' ? `Main view of ${title}` : `Vista principal de ${title}` }]
 	: [];
 const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStudy ? 'case-study' : null;
 ---
@@ -29,7 +31,7 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 	data-card-primary={primaryAction}
 	tabindex={primaryAction ? '0' : undefined}
 	role={primaryAction ? 'button' : undefined}
-	aria-label={primaryAction ? `Abrir acción principal de ${title}` : undefined}
+	aria-label={primaryAction ? `${locale === 'en' ? 'Open primary action for' : 'Abrir acción principal de'} ${title}` : undefined}
 >
 	{
 		project.coverImage ? (
@@ -50,7 +52,7 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 			))}
 		</ul>
 
-		<div class="actions" aria-label="Enlaces del proyecto">
+			<div class="actions" aria-label={locale === 'en' ? 'Project links' : 'Enlaces del proyecto'}>
 			{
 				links.demo ? (
 					<a
@@ -84,8 +86,9 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 							{locale === 'en' ? 'Details' : 'Detalle'}
 					</a>
 				) : null
-			}
-		</div>
+				}
+				{caseStudy ? <button class="button button-sm" type="button" data-case-study-open={caseStudyDialogId} aria-controls={caseStudyDialogId} aria-haspopup="dialog">{locale === 'en' ? 'Case study' : 'Caso de estudio'}</button> : null}
+			</div>
 	</div>
 
 	{
@@ -100,6 +103,25 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 </article>
 
 	{gallery.length ? <SoldProductGallery title={title} gallery={gallery} locale={locale} dialogId={dialogId} /> : null}
+	{caseStudy ? <dialog class="case-study-dialog" id={caseStudyDialogId} aria-labelledby={`${caseStudyDialogId}-title`} data-case-study-dialog>
+		<div class="case-study-panel">
+			<div class="case-study-header">
+				<h2 id={`${caseStudyDialogId}-title`}>{title}: {locale === 'en' ? 'Case study' : 'Caso de estudio'}</h2>
+				<button class="button close" type="button" data-case-study-close aria-label={locale === 'en' ? 'Close case study' : 'Cerrar caso de estudio'}><span aria-hidden="true">×</span></button>
+			</div>
+			<div class="case-study-content">
+				{caseStudy.problem ? <section><h3>{locale === 'en' ? 'Problem' : 'Problema'}</h3><p>{caseStudy.problem}</p></section> : null}
+				{caseStudy.context ? <section><h3>{locale === 'en' ? 'Context and constraints' : 'Contexto y restricciones'}</h3><p>{caseStudy.context}</p></section> : null}
+				{caseStudy.architecture ? <section><h3>{locale === 'en' ? 'Architecture' : 'Arquitectura'}</h3><p>{caseStudy.architecture}</p></section> : null}
+				{caseStudy.decisions?.length ? <section><h3>{locale === 'en' ? 'Key engineering decisions' : 'Decisiones clave de ingeniería'}</h3><ul>{caseStudy.decisions.map((item) => <li>{item}</li>)}</ul></section> : null}
+				{caseStudy.challenges?.length ? <section><h3>{locale === 'en' ? 'Challenges' : 'Desafíos'}</h3><ul>{caseStudy.challenges.map((item) => <li>{item}</li>)}</ul></section> : null}
+				{caseStudy.development ? <section><h3>{locale === 'en' ? 'Development approach' : 'Enfoque de desarrollo'}</h3><p>{caseStudy.development}</p></section> : null}
+				{caseStudy.validation ? <section><h3>{locale === 'en' ? 'Validation and testing' : 'Validación y pruebas'}</h3><p>{caseStudy.validation}</p></section> : null}
+				{caseStudy.outcome ? <section><h3>{locale === 'en' ? 'Outcome' : 'Resultado'}</h3><p>{caseStudy.outcome}</p></section> : null}
+				{caseStudy.technologies?.length ? <section><h3>{locale === 'en' ? 'Technologies' : 'Tecnologías'}</h3><ul class="case-study-tech">{caseStudy.technologies.map((technology) => <li>{technology}</li>)}</ul></section> : null}
+			</div>
+		</div>
+	</dialog> : null}
 
 <style>
 	.project {
@@ -190,6 +212,67 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 		background: linear-gradient(135deg, var(--accent), var(--accent-2));
 		flex: 0 0 auto;
 	}
+
+	.case-study-dialog {
+		box-sizing: border-box;
+		width: min(720px, calc(100vw - 32px));
+		max-height: calc(100vh - 32px);
+		padding: 0;
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		background: var(--bg);
+		color: var(--text);
+		box-shadow: var(--shadow);
+	}
+
+	.case-study-dialog::backdrop { background: rgba(0, 0, 0, 0.68); }
+
+	.case-study-panel { max-height: calc(100vh - 32px); overflow-y: auto; }
+
+	.case-study-header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 20px 20px 0;
+	}
+
+	.case-study-header h2 { margin: 0; font-size: 20px; }
+
+	.case-study-header .close { flex: 0 0 auto; width: 36px; height: 36px; padding: 0; font-size: 24px; line-height: 1; }
+
+	.case-study-content {
+		padding: 16px;
+		font-size: 14px;
+	}
+
+	.case-study-content section + section { margin-top: 16px; }
+
+	.case-study-content h3 {
+		margin: 0 0 4px;
+		font-size: 14px;
+	}
+
+	.case-study-content p,
+	.case-study-content ul {
+		margin: 0;
+	}
+
+	.case-study-content ul {
+		display: grid;
+		gap: 6px;
+		padding-left: 20px;
+	}
+
+	.case-study-tech {
+		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+	}
+
+	@media (max-width: 560px) {
+		.case-study-dialog { width: calc(100vw - 16px); max-height: calc(100vh - 16px); }
+		.case-study-panel { max-height: calc(100vh - 16px); }
+		.case-study-header { padding: 16px 16px 0; }
+	}
 </style>
 
 <script>
@@ -207,5 +290,19 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 			event.preventDefault();
 			card.querySelector<HTMLElement>(`[data-card-primary="${card.dataset.cardPrimary}"]`)?.click();
 		});
+	}
+
+	if (!document.documentElement.dataset.caseStudyDialogs) {
+		document.documentElement.dataset.caseStudyDialogs = 'true';
+		for (const dialog of document.querySelectorAll<HTMLDialogElement>('[data-case-study-dialog]')) {
+			const closeButton = dialog.querySelector<HTMLButtonElement>('[data-case-study-close]');
+			let restoreFocusTo: HTMLElement | null = null;
+			for (const openButton of document.querySelectorAll<HTMLButtonElement>(`[data-case-study-open="${dialog.id}"]`)) {
+				openButton.addEventListener('click', () => { restoreFocusTo = openButton; dialog.showModal(); closeButton?.focus(); });
+			}
+			closeButton?.addEventListener('click', () => dialog.close());
+			dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+			dialog.addEventListener('close', () => { restoreFocusTo?.focus(); restoreFocusTo = null; });
+		}
 	}
 </script>

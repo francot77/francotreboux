@@ -3,15 +3,21 @@ import TechChip from './TechChip.astro';
 import SoldProductGallery from './SoldProductGallery.astro';
 import ProjectMedia from './ProjectMedia.astro';
 import type { SoldProduct } from '../data/soldProducts';
+import { localizeSoldProducts, type Locale } from '../i18n/localization';
 
 type Props = {
 	product: SoldProduct;
+	locale?: Locale;
 };
 
-const { product } = Astro.props;
-const dialogId = `${product.slug}-screenshots`;
-const hasGallery = product.gallery?.length;
-const primaryAction = product.links?.demo ? 'demo' : hasGallery ? 'gallery' : null;
+const { product, locale = 'es' } = Astro.props;
+const localizedProduct = localizeSoldProducts(locale, [product])[0];
+const dialogId = `${localizedProduct.slug}-screenshots`;
+const hasGallery = localizedProduct.gallery?.length;
+const primaryAction = localizedProduct.links?.demo ? 'demo' : hasGallery ? 'gallery' : null;
+const labels = locale === 'en'
+	? { action: 'Open primary action for', technologies: 'Technologies of', highlights: 'Highlights of', demo: 'View demo', gallery: 'View screenshots' }
+	: { action: 'Abrir acción principal de', technologies: 'Tecnologías de', highlights: 'Aspectos destacados de', demo: 'Ver demo', gallery: 'Ver capturas de pantalla' };
 ---
 
 <article
@@ -20,30 +26,30 @@ const primaryAction = product.links?.demo ? 'demo' : hasGallery ? 'gallery' : nu
 	data-card-primary={primaryAction}
 	tabindex={primaryAction ? '0' : undefined}
 	role={primaryAction ? 'button' : undefined}
-	aria-label={primaryAction ? `Abrir acción principal de ${product.title}` : undefined}
+	aria-label={primaryAction ? `${labels.action} ${localizedProduct.title}` : undefined}
 >
-	{product.coverImage ? (
+	{localizedProduct.coverImage ? (
 		<div class="cover">
-			<ProjectMedia image={product.coverImage} dialogId={hasGallery ? dialogId : undefined} />
+			<ProjectMedia image={localizedProduct.coverImage} locale={locale} dialogId={hasGallery ? dialogId : undefined} />
 		</div>
 	) : null}
 	<div class="content">
-		<p class="eyebrow">{product.status}</p>
-		<h3 class="title">{product.title}</h3>
-		<p class="desc muted">{product.summary}</p>
+		<p class="eyebrow">{localizedProduct.status}</p>
+		<h3 class="title">{localizedProduct.title}</h3>
+		<p class="desc muted">{localizedProduct.summary}</p>
 
-		<ul class="tech" aria-label={`Tecnologías de ${product.title}`}>
-			{product.technologies.map((technology) => <TechChip label={technology} />)}
+		<ul class="tech" aria-label={`${labels.technologies} ${localizedProduct.title}`}>
+			{localizedProduct.technologies.map((technology) => <TechChip label={technology} />)}
 		</ul>
 
-		<ul class="highlights" aria-label={`Aspectos destacados de ${product.title}`}>
-			{product.outcome.map((highlight) => <li>{highlight}</li>)}
+		<ul class="highlights" aria-label={`${labels.highlights} ${localizedProduct.title}`}>
+			{localizedProduct.outcome.map((highlight) => <li>{highlight}</li>)}
 		</ul>
 
 		<div class="actions">
-			{product.links?.demo ? (
-				<a class="button button-sm" data-card-primary="demo" href={product.links.demo} target="_blank" rel="noreferrer">
-					Ver demo
+				{localizedProduct.links?.demo ? (
+					<a class="button button-sm" data-card-primary="demo" href={localizedProduct.links.demo} target="_blank" rel="noreferrer">
+						{labels.demo}
 				</a>
 			) : null}
 			{hasGallery ? (
@@ -55,12 +61,12 @@ const primaryAction = product.links?.demo ? 'demo' : hasGallery ? 'gallery' : nu
 					aria-controls={dialogId}
 					aria-haspopup="dialog"
 				>
-					Ver capturas de pantalla
+						{labels.gallery}
 				</button>
 			) : null}
 		</div>
 	</div>
-	{hasGallery ? <SoldProductGallery title={product.title} gallery={product.gallery!} dialogId={dialogId} /> : null}
+	{hasGallery ? <SoldProductGallery title={localizedProduct.title} gallery={localizedProduct.gallery!} locale={locale} dialogId={dialogId} /> : null}
 </article>
 
 <style>

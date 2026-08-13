@@ -3,7 +3,7 @@ export const SITE = {
     role: 'Full Stack Developer',
     location: 'Villa Elisa, Entre Rios, Argentina',
     email: 'francotreboux@gmail.com',
-    siteUrl: 'https://tudominio.com',
+    siteUrl: 'https://francotreboux.vercel.app/',
     description:
         'Portfolio personal: proyectos, experiencia, habilidades, certificaciones y contacto.',
     social: {

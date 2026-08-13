@@ -1,0 +1,127 @@
+---
+import { SITE } from '../consts';
+import { projects } from '../data/projects';
+import { experience } from '../data/experience';
+import { skillGroups } from '../data/skills';
+import { certifications } from '../data/certifications';
+import Section from './Section.astro';
+import ProjectCard from './ProjectCard.astro';
+import Timeline from './Timeline.astro';
+import Badge from './Badge.astro';
+import TechChip from './TechChip.astro';
+import GitHubProfileCard from './GitHubProfileCard.astro';
+import BrandIcon from './BrandIcon.astro';
+import HowIWork from './HowIWork.astro';
+import { siGithub } from 'simple-icons';
+import { getCopy, type Locale, equivalentUrl, localizeCertifications, localizeSkills } from '../i18n/localization';
+
+type Props = { locale: Locale };
+const { locale } = Astro.props;
+const english = locale === 'en';
+const copy = getCopy(locale);
+const localizedCertifications = localizeCertifications(locale, certifications);
+const localizedSkills = localizeSkills(locale, skillGroups);
+const text = english ? {
+	projectsSubtitle: 'A selection of recent work with demo links.',
+	seeAllProjects: 'See all projects',
+	experienceSubtitle: 'A chronological timeline of roles and responsibilities.',
+	experienceDetail: 'Details',
+	aboutSubtitle: 'Profile, technical skills, and ways of working.',
+	aboutFirst: 'I develop web products with a focus on performance, maintainability, and pragmatic technical decisions.',
+	aboutSecond: 'I look for simple solutions that can scale without becoming unnecessarily complex.',
+	seeMore: 'See more',
+	certificationsTitle: 'Education',
+	certificationsSubtitle: 'Courses and certifications supporting continuous learning.',
+	seeAllCertifications: 'See all',
+	contactSubtitle: 'Send me a message or connect through professional networks.',
+	contactTitle: "Let's talk",
+	contactCopy: 'Available for freelance projects and opportunities. I usually reply within 24–48 hours.',
+	form: 'Form',
+	location: 'Location',
+} : {
+	projectsSubtitle: 'Selección de trabajos recientes con enlaces a demo.',
+	seeAllProjects: 'Ver todos',
+	experienceSubtitle: 'Línea de tiempo cronológica de roles y responsabilidades.',
+	experienceDetail: 'Detalle',
+	aboutSubtitle: 'Resumen, habilidades técnicas y formas de trabajo.',
+	aboutFirst: 'Trabajo desarrollando productos web con foco en rendimiento, mantenibilidad y decisiones técnicas pragmáticas.',
+	aboutSecond: 'Busco soluciones simples que puedan escalar sin volverse complejas innecesariamente.',
+	seeMore: 'Ver más',
+	certificationsTitle: 'Educación',
+	certificationsSubtitle: 'Cursos y certificaciones que respaldan formación y aprendizaje continuo.',
+	seeAllCertifications: 'Ver todas',
+	contactSubtitle: 'Envíame un mensaje o conecta en redes profesionales.',
+	contactTitle: 'Hablemos',
+	contactCopy: 'Disponible para proyectos freelance y oportunidades. Respondo normalmente en 24–48 horas.',
+	form: 'Formulario',
+	location: 'Ubicación',
+};
+---
+
+<section class="hero">
+	<div class="container inner">
+		<div class="content" data-reveal>
+			<p class="chip"><span class="dot" aria-hidden="true"></span>{SITE.location}</p>
+			<h1 class="title">{SITE.name}</h1>
+			<p class="lead muted"><strong>{copy.home.role}.</strong> {copy.home.intro}</p>
+			<p class="availability muted">{copy.home.availability}</p>
+			<div class="cta"><a class="button" href={equivalentUrl('projects', locale)}>{copy.nav.projects}</a><a class="button secondary" href={equivalentUrl('contact', locale)}>{copy.nav.contact}</a></div>
+			<div class="meta muted"><a href={SITE.social.linkedin} target="_blank" rel="noreferrer">{copy.home.linkedin}</a><span aria-hidden="true">·</span><a href={SITE.social.github} target="_blank" rel="noreferrer"><BrandIcon icon={siGithub} />GitHub</a><span aria-hidden="true">·</span><a href={`mailto:${SITE.email}`}>{SITE.email}</a></div>
+		</div>
+		<div class="media" data-reveal><div class="avatar" aria-hidden="true"><img src="/yopi.webp" alt="avatar" class="img-avatar" /></div></div>
+	</div>
+</section>
+
+<Section title={copy.nav.projects} subtitle={text.projectsSubtitle} id="proyectos">
+	<div class="grid projects">{projects.slice(0, 2).map((project) => <ProjectCard project={project} locale={locale} />)}</div>
+	<div class="more"><a class="button secondary" href={equivalentUrl('projects', locale)}>{text.seeAllProjects}</a></div>
+</Section>
+
+<Section title={copy.nav.experience} subtitle={text.experienceSubtitle} id="experiencia">
+	<Timeline items={experience} locale={locale} />
+	<div class="more"><a class="button secondary" href={equivalentUrl('experience', locale)}>{text.experienceDetail}</a></div>
+</Section>
+
+<Section title={copy.nav.about} subtitle={text.aboutSubtitle} id="acerca">
+	<div class="about-grid"><div class="about card" data-reveal><div class="text"><p class="muted">{text.aboutFirst}</p><p class="muted">{text.aboutSecond}</p></div><div class="skills">{localizedSkills.map((group) => <div class="group"><p class="groupTitle">{group.title}</p><ul class="pillList">{group.items.map((item) => <TechChip label={item} />)}</ul></div>)}</div></div><GitHubProfileCard locale={locale} /></div>
+	<div class="more"><a class="button secondary" href={equivalentUrl('about', locale)}>{text.seeMore}</a></div>
+</Section>
+
+<Section title={copy.howIWork.title} subtitle={copy.howIWork.subtitle} id="como-trabajo"><HowIWork locale={locale} /></Section>
+
+<Section title={text.certificationsTitle} subtitle={text.certificationsSubtitle} id="certificaciones">
+	<div class="grid certs">{localizedCertifications.slice(0, 4).map((certification) => <Badge label={certification.badgeLabel} title={certification.name} subtitle={`${certification.issuer} · ${certification.year}`} href={certification.url} imageSrc={certification.image} imageAlt={certification.imageAlt} />)}</div>
+	<div class="more"><a class="button secondary" href={equivalentUrl('certifications', locale)}>{text.seeAllCertifications}</a></div>
+</Section>
+
+<Section title={copy.nav.contact} subtitle={text.contactSubtitle} id="contacto">
+	<div class="contact card" data-reveal><div class="copy"><h3 class="h3">{text.contactTitle}</h3><p class="muted">{text.contactCopy}</p><div class="links"><a class="button secondary" href={SITE.social.linkedin} target="_blank" rel="noreferrer">LinkedIn</a><a class="button secondary" href={SITE.social.github} target="_blank" rel="noreferrer"><BrandIcon icon={siGithub} />GitHub</a><a class="button" href={equivalentUrl('contact', locale)}>{text.form}</a></div></div><div class="quick"><p class="chip">Email</p><a class="email" href={`mailto:${SITE.email}`}>{SITE.email}</a><p class="chip">{text.location}</p><p class="muted">{SITE.location}</p></div></div>
+</Section>
+
+<style>
+	.hero { padding: clamp(52px, 8vw, 76px) 0 14px; }
+	.inner { display: grid; gap: 18px; align-items: start; }
+	.media { display: grid; justify-items: center; }
+	.dot { width: 8px; height: 8px; border-radius: 99px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+	.content { display: grid; gap: 14px; padding: 20px 0; }
+	.title { margin: 0; font-size: clamp(36px, 6vw, 56px); letter-spacing: -1.2px; line-height: 1.05; }
+	.lead { margin: 0; font-size: 16px; max-width: 70ch; }
+	.cta, .meta, .links { display: inline-flex; gap: 10px; flex-wrap: wrap; }
+	.meta { gap: 10px; font-weight: 600; font-size: 14px; }
+	.secondary { background: transparent; box-shadow: none; }
+	.panel { padding: 18px; display: grid; gap: 12px; }
+	.img-avatar { border-radius: 25%; width: 100%; height: 100%; object-fit: cover; }
+	.avatar { width: min(258px, 70vw); aspect-ratio: 1 / 1; display: grid; place-items: center; background: transparent; }
+	.projects { grid-template-columns: 1fr; }
+	.more { margin-top: 18px; }
+	.about-grid { display: grid; gap: 18px; }
+	.about { padding: 18px; display: grid; gap: 18px; }
+	.text { display: grid; gap: 10px; } .text p { margin: 0; }
+	.skills { display: grid; gap: 14px; } .groupTitle { margin: 0 0 10px; font-weight: 900; letter-spacing: -0.2px; }
+	.pillList { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+	.certs { grid-template-columns: 1fr; }
+	.contact { padding: 18px; display: grid; gap: 18px; } .h3 { margin: 0; font-size: 18px; letter-spacing: -0.2px; }
+	.copy, .quick { display: grid; gap: 12px; align-content: start; } .copy p, .quick p { margin: 0; }
+	.email { font-weight: 800; letter-spacing: -0.2px; overflow-wrap: anywhere; }
+	@media (min-width: 940px) { .hero { padding: 76px 0 18px; } .inner { grid-template-columns: 1.25fr 0.75fr; align-items: center; } .media { justify-items: end; } .title { font-size: 56px; } .projects { grid-template-columns: repeat(2, 1fr); } .certs { grid-template-columns: repeat(2, 1fr); } .about { grid-template-columns: 1fr 1fr; align-items: start; } .about-grid { grid-template-columns: 1fr 0.7fr; align-items: start; } .contact { grid-template-columns: 1.3fr 0.7fr; align-items: start; } }
+</style>

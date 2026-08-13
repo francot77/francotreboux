@@ -7,6 +7,6 @@ describe('robots discovery contract', () => {
 	});
 
 	it('uses the portfolio site URL when no override is provided', () => {
-		expect(robotsTxt()).toContain('Sitemap: https://tudominio.com/sitemap-index.xml');
+		expect(robotsTxt()).toContain('Sitemap: https://francotreboux.vercel.app/sitemap-index.xml');
 	});
 });

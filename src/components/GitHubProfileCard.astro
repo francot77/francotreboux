@@ -1,7 +1,9 @@
 ---
 import { siGithub } from "simple-icons";
 import BrandIcon from "./BrandIcon.astro";
+import type { Locale } from '../i18n/localization';
 
+const { locale = 'es' } = Astro.props as { locale?: Locale };
 const profile = {
 	name: "Franco Treboux",
 	bio: "Full Stack Developer",
@@ -10,6 +12,9 @@ const profile = {
 	url: "https://github.com/francot77",
 	avatar: "https://avatars.githubusercontent.com/u/69086232?v=4",
 };
+const copy = locale === 'en'
+	? { profileLabel: 'View GitHub profile', avatarAlt: 'Avatar of', repositories: 'public repositories' }
+	: { profileLabel: 'Ver el perfil de GitHub de', avatarAlt: 'Avatar de', repositories: 'repositorios públicos' };
 ---
 
 <a
@@ -17,13 +22,13 @@ const profile = {
 	href={profile.url}
 	target="_blank"
 	rel="noopener noreferrer"
-	aria-label={`Ver el perfil de GitHub de ${profile.name}`}
+	aria-label={`${copy.profileLabel} ${profile.name}`}
 	data-reveal
 >
 	<img
 		class="avatar"
 		src={profile.avatar}
-		alt={`Avatar de ${profile.name}`}
+			alt={`${copy.avatarAlt} ${profile.name}`}
 		width="460"
 		height="460"
 		loading="lazy"
@@ -37,7 +42,7 @@ const profile = {
 		<div class="details muted">
 			<span>{profile.location}</span>
 			<span aria-hidden="true">·</span>
-			<span>{profile.repositories} repositorios públicos</span>
+			<span>{profile.repositories} {copy.repositories}</span>
 		</div>
 	</div>
 </a>

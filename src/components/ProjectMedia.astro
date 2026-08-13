@@ -5,14 +5,17 @@ type MediaImage = {
 	width: number;
 	height: number;
 };
+import type { Locale } from '../i18n/localization';
 
 type Props = {
 	image: MediaImage;
 	dialogId?: string;
 	label?: string;
+	locale?: Locale;
 };
 
-const { image, dialogId, label = `Ampliar imagen: ${image.alt}` } = Astro.props;
+const { image, dialogId, label, locale = 'es' } = Astro.props;
+const imageLabel = label ?? (locale === 'en' ? `Enlarge image: ${image.alt}` : `Ampliar imagen: ${image.alt}`);
 const isInteractive = Boolean(dialogId);
 ---
 
@@ -24,7 +27,7 @@ const isInteractive = Boolean(dialogId);
 			data-gallery-open
 			aria-controls={dialogId}
 			aria-haspopup="dialog"
-			aria-label={label}
+			aria-label={imageLabel}
 		>
 			<img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async" />
 		</button>

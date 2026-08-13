@@ -87,4 +87,16 @@ describe('SoldProductCard', () => {
 		);
 		expect(fragment.querySelector('dialog')).toBeNull();
 	});
+
+	it('localizes the product content and gallery controls in English', async () => {
+		const fragment = await renderAstro(SoldProductCard, { props: { product: soldProducts[0], locale: 'en' } });
+
+		expect(fragment.querySelector('.eyebrow')?.textContent).toBe('Private project');
+		expect(fragment.textContent).toContain('Business management system for retailers');
+		expect(fragment.querySelector('[data-gallery-open].button')?.textContent).toContain('View screenshots');
+		expect(fragment.querySelector('dialog')?.getAttribute('aria-label')).toBe('Preview of SaasComercio');
+		expect(fragment.querySelector('[data-gallery-close]')?.getAttribute('aria-label')).toBe('Close preview');
+		expect(fragment.querySelector('[data-gallery-previous]')?.getAttribute('aria-label')).toBe('Previous image');
+		expect(fragment.querySelector('[data-gallery-next]')?.getAttribute('aria-label')).toBe('Next image');
+	});
 });
