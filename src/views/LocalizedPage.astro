@@ -4,39 +4,184 @@ import Section from '../components/Section.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Timeline from '../components/Timeline.astro';
 import ContactForm from '../components/ContactForm.astro';
+import Badge from '../components/Badge.astro';
+import SoldProductCard from '../components/SoldProductCard.astro';
+import TechChip from '../components/TechChip.astro';
+import HomePage from '../components/HomePage.astro';
+import BrandIcon from '../components/BrandIcon.astro';
+import { siGithub } from 'simple-icons';
+import { SITE } from '../consts';
 import { projects } from '../data/projects';
 import { experience } from '../data/experience';
 import { certifications } from '../data/certifications';
 import { skillGroups } from '../data/skills';
 import { soldProducts } from '../data/soldProducts';
-import Badge from '../components/Badge.astro';
-import SoldProductCard from '../components/SoldProductCard.astro';
-import TechChip from '../components/TechChip.astro';
-import HomePage from '../components/HomePage.astro';
-import { getCopy, type Locale, type PageId, localizeCertifications } from '../i18n/localization';
+import { getCopy, localizeCertifications, localizeSkills, type Locale, type PageId } from '../i18n/localization';
 
 type Props = { locale: Locale; pageId: PageId };
 const { locale, pageId } = Astro.props;
-const copy = getCopy(locale);
 const english = locale === 'en';
-const labels = english
-	? { title: { home: 'Portfolio', projects: 'Projects', experience: 'Experience', about: 'About me', certifications: 'Certifications', contact: 'Contact' }[pageId], intro: 'I build fast, accessible, and maintainable web products.', form: 'Send me a message', success: 'Message received. Thank you!' }
-	: { title: { home: 'Inicio', projects: 'Proyectos', experience: 'Experiencia', about: 'Acerca de mí', certifications: 'Certificaciones', contact: 'Contacto' }[pageId], intro: 'Construyo productos web rápidos, accesibles y mantenibles.', form: 'Envíame un mensaje', success: 'Mensaje recibido. ¡Gracias!' };
+const copy = getCopy(locale);
 const sent = pageId === 'contact' && Astro.url.searchParams.get('enviado') === '1';
+const page = {
+	home: {
+		title: copy.nav.home,
+		description: english ? 'Personal portfolio: projects, experience, skills, certifications, and contact.' : 'Portfolio personal: proyectos, experiencia, habilidades, certificaciones y contacto.',
+	},
+	projects: {
+		title: copy.nav.projects,
+		description: english ? 'Projects with technologies used and demo links.' : 'Proyectos con tecnologías utilizadas y enlaces a demos.',
+	},
+	experience: {
+		title: copy.nav.experience,
+		description: english ? 'Professional experience in chronological timeline.' : 'Experiencia laboral en línea de tiempo cronológica.',
+	},
+	about: {
+		title: copy.nav.about,
+		description: english ? 'Personal information, technical skills, and working approach.' : 'Información personal, habilidades técnicas y enfoque de trabajo.',
+	},
+	certifications: {
+		title: copy.nav.certifications,
+		description: english ? 'Certifications with badges and credentials.' : 'Certificaciones con badges e insignias.',
+	},
+	contact: {
+		title: copy.nav.contact,
+		description: english ? 'Contact form and links to professional networks.' : 'Formulario de contacto y enlaces a redes profesionales.',
+	},
+}[pageId];
+const localizedSkills = localizeSkills(locale, skillGroups);
+const localizedCertifications = localizeCertifications(locale, certifications);
+const text = english
+	? {
+		commercialSubtitle: 'Products delivered to clients. Source code is private; selected screenshots are available.',
+		experienceTitle: 'Professional experience',
+		aboutSubtitle: 'Professional profile and technical skills.',
+		profile: 'Profile',
+		primaryStackText: 'I mainly work with TypeScript, React/Next.js, and Node.js',
+		bioFirst: 'I develop web products with a focus on performance, clarity, and simple architecture.',
+		bioSecond: 'I am interested in building maintainable systems, measuring what matters, and making technical decisions with judgment.',
+		skills: 'Skills',
+		contactSubtitle: 'Write to me and connect with me easily',
+		messageTitle: 'Send me a message',
+		messageCopy: 'Tell me about your project or opportunity. I usually reply within 24–48 hours.',
+		links: 'Links',
+		location: 'Location',
+		notice: 'Message received. Thank you! I will reply soon.',
+	}
+	: {
+		commercialSubtitle: 'Productos entregados a clientes. El código fuente es privado; podés consultar capturas seleccionadas.',
+		experienceTitle: 'Experiencia laboral',
+		aboutSubtitle: 'Perfil profesional y habilidades técnicas.',
+		profile: 'Perfil',
+		primaryStackText: 'Trabajo principalmente con TypeScript, React/Next.js y Node',
+		bioFirst: 'Desarrollo productos web con foco en rendimiento, claridad y arquitectura simple.',
+		bioSecond: 'Me interesa construir sistemas mantenibles, medir lo que importa y tomar decisiones técnicas con criterio.',
+		skills: 'Habilidades',
+		contactSubtitle: 'Escríbeme y conecta conmigo facilmente',
+		messageTitle: 'Envíame un mensaje',
+		messageCopy: 'Cuéntame sobre tu proyecto o la oportunidad. Respondo normalmente en 24–48 horas.',
+		links: 'Enlaces',
+		location: 'Ubicación',
+		notice: 'Mensaje recibido. ¡Gracias! Te responderé pronto.',
+	};
 ---
 
-<BaseLayout title={labels.title} locale={locale} pageId={pageId}>
-	{pageId === 'home' ? (
-			<HomePage locale={locale} />
-	) : pageId === 'projects' ? (
-		<><Section title={copy.nav.projects}><div class="grid">{projects.map((project) => <ProjectCard project={project} locale={locale} />)}</div></Section><Section title={english ? 'Commercial products' : 'Productos comerciales'}><div class="grid">{soldProducts.map((product) => <SoldProductCard product={product} locale={locale} />)}</div></Section></>
-	) : pageId === 'experience' ? (
-		<Section title={english ? 'Professional experience' : 'Experiencia laboral'}><Timeline items={experience} locale={locale} /></Section>
-	) : pageId === 'contact' ? (
-		<Section title={copy.nav.contact} subtitle={english ? 'Tell me about your project.' : 'Cuéntame sobre tu proyecto.'}>{sent ? <div role="status">{labels.success}</div> : null}<div class="card panel"><h2>{labels.form}</h2><ContactForm locale={locale} subjectTag="portfolio" /></div></Section>
-	) : pageId === 'certifications' ? (
-				<Section title={copy.nav.certifications}><div class="grid">{localizeCertifications(locale, certifications).map((certification) => <Badge label={certification.badgeLabel} title={certification.name} subtitle={`${certification.issuer} · ${certification.year}`} href={certification.url} imageSrc={certification.image} imageAlt={certification.imageAlt} />)}</div></Section>
-	) : (
-		<Section title={labels.title} subtitle={english ? 'Professional profile and technical skills.' : 'Perfil profesional y habilidades técnicas.'}><div class="card panel"><h2>{english ? 'Profile' : 'Perfil'}</h2><p class="muted">{english ? 'I develop web products with a focus on performance, clarity, and simple architecture.' : 'Desarrollo productos web con foco en rendimiento, claridad y arquitectura simple.'}</p><h2>{english ? 'Skills' : 'Habilidades'}</h2>{skillGroups.map((group) => <div><h3>{locale === 'en' && group.title === 'Backend / Infra' ? 'Backend / Infrastructure' : group.title}</h3><ul>{group.items.map((item) => <li><TechChip label={item} /></li>)}</ul></div>)}</div></Section>
-	)}
+<BaseLayout title={page?.title} description={page?.description} locale={locale} pageId={pageId}>
+	{pageId === 'home' ? <HomePage locale={locale} /> : null}
+
+	{pageId === 'projects' ? (
+		<>
+			<Section title={copy.nav.projects} id="proyectos">
+				<div class="grid list">
+					{projects.map((project) => <ProjectCard project={project} locale={locale} />)}
+				</div>
+			</Section>
+			<Section title={english ? 'Commercial products' : 'Productos comerciales'} subtitle={text.commercialSubtitle} id="productos-comerciales">
+				<div class="grid sold-list">
+					{soldProducts.map((product) => <SoldProductCard product={product} locale={locale} />)}
+				</div>
+			</Section>
+		</>
+	) : null}
+
+	{pageId === 'experience' ? (
+		<Section title={text.experienceTitle} id="experiencia"><Timeline items={experience} locale={locale} /></Section>
+	) : null}
+
+	{pageId === 'about' ? (
+		<Section title={copy.nav.about} subtitle={text.aboutSubtitle} id="acerca">
+			<div class="card wrap" data-reveal>
+				<div class="bio">
+					<h3 class="h3">{text.profile}</h3>
+					<p class="muted">{text.primaryStackText}</p>
+					<ul class="list" aria-label={english ? 'Main stack' : 'Stack principal'}>
+						<TechChip label="TypeScript" /><TechChip label="React" /><TechChip label="Next.js" /><TechChip label="Node.js" />
+					</ul>
+					<p class="muted">{text.bioFirst}</p>
+					<p class="muted">{text.bioSecond}</p>
+				</div>
+				<div class="skills">
+					<h3 class="h3">{text.skills}</h3>
+					{localizedSkills.map((group) => <div class="group"><p class="groupTitle">{group.title}</p><ul class="list">{group.items.map((item) => <TechChip label={item} />)}</ul></div>)}
+				</div>
+			</div>
+		</Section>
+	) : null}
+
+	{pageId === 'certifications' ? (
+		<Section title={copy.nav.certifications} id="certificaciones">
+			<div class="grid list">
+				{localizedCertifications.map((certification) => <Badge label={certification.badgeLabel} title={certification.name} subtitle={`${certification.issuer} · ${certification.year}`} href={certification.url} imageSrc={certification.image} imageAlt={certification.imageAlt} />)}
+			</div>
+		</Section>
+	) : null}
+
+	{pageId === 'contact' ? (
+		<Section title={copy.nav.contact} subtitle={text.contactSubtitle} id="contacto">
+			{sent ? <div class="notice" role="status" data-reveal><span class="noticeDot" aria-hidden="true" /><span>{text.notice}</span></div> : null}
+			<div class="grid layout">
+				<div class="card panel" data-reveal>
+					<h3 class="h3">{text.messageTitle}</h3>
+					<p class="muted">{text.messageCopy}</p>
+					<ContactForm subjectTag="portfolio" locale={locale} />
+				</div>
+				<aside class="card aside" data-reveal>
+					<h3 class="h3">{text.links}</h3>
+					<div class="links">
+						<a class="button secondary" href={SITE.social.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+						<a class="button secondary" href={SITE.social.github} target="_blank" rel="noreferrer"><BrandIcon icon={siGithub} />GitHub</a>
+						{SITE.social.x ? <a class="button secondary" href={SITE.social.x} target="_blank" rel="noreferrer">X</a> : null}
+						<a class="button" href={`mailto:${SITE.email}`}>Email</a>
+					</div>
+					<div class="meta"><p class="chip">{text.location}</p><p class="muted">{SITE.location}</p></div>
+				</aside>
+			</div>
+		</Section>
+	) : null}
 </BaseLayout>
+
+<style>
+	.grid.list { grid-template-columns: 1fr; }
+	.grid.sold-list { grid-template-columns: 1fr; }
+	.bio .list, .skills .list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+	.wrap { padding: 18px; display: grid; gap: 18px; }
+	.h3 { margin: 0; font-size: 18px; letter-spacing: -0.2px; }
+	.bio { display: grid; gap: 12px; }
+	.bio p { margin: 0; }
+	.skills { display: grid; gap: 14px; }
+	.groupTitle { margin: 0 0 10px; font-weight: 900; letter-spacing: -0.2px; }
+	.layout { grid-template-columns: 1fr; align-items: start; }
+	.panel, .aside { padding: 18px; display: grid; gap: 12px; }
+	.panel p, .aside p { margin: 0; }
+	.secondary { background: transparent; box-shadow: none; }
+	.links { display: grid; grid-template-columns: 1fr; gap: 10px; }
+	.meta { margin-top: 10px; display: grid; gap: 10px; }
+	.notice { display: inline-flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--border); background: color-mix(in oklab, var(--surface) 70%, transparent); margin-bottom: 14px; }
+	.noticeDot { width: 10px; height: 10px; border-radius: 99px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+
+	@media (min-width: 940px) {
+		.grid.list { grid-template-columns: repeat(2, 1fr); }
+		.wrap { grid-template-columns: 1.2fr 0.8fr; align-items: start; }
+		.layout { grid-template-columns: 1.25fr 0.75fr; }
+	}
+</style>

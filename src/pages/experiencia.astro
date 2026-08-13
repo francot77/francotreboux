@@ -1,17 +1,7 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Section from "../components/Section.astro";
-import Timeline from "../components/Timeline.astro";
-import { experience } from "../data/experience";
+import LocalizedPage from '../views/LocalizedPage.astro';
 
 export const prerender = true;
 ---
 
-<BaseLayout
-	title="Experiencia"
-	description="Experiencia laboral en línea de tiempo cronológica."
->
-	<Section title="Experiencia laboral" id="experiencia">
-		<Timeline items={experience} />
-	</Section>
-</BaseLayout>
+<LocalizedPage locale="es" pageId="experience" />

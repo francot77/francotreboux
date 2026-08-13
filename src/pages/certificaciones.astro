@@ -1,42 +1,7 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Section from "../components/Section.astro";
-import Badge from "../components/Badge.astro";
-import { certifications } from "../data/certifications";
+import LocalizedPage from '../views/LocalizedPage.astro';
 
 export const prerender = true;
 ---
 
-<BaseLayout
-	title="Certificaciones"
-	description="Certificaciones con badges e insignias."
->
-	<Section title="Certificaciones" id="certificaciones">
-		<div class="grid list">
-			{
-				certifications.map((c) => (
-					<Badge
-						label={c.badgeLabel}
-						title={c.name}
-						subtitle={`${c.issuer} · ${c.year}`}
-						href={c.url}
-						imageSrc={c.image}
-						imageAlt={c.imageAlt}
-					/>
-				))
-			}
-		</div>
-	</Section>
-</BaseLayout>
-
-<style>
-	.list {
-		grid-template-columns: 1fr;
-	}
-
-	@media (min-width: 940px) {
-		.list {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-</style>
+<LocalizedPage locale="es" pageId="certifications" />

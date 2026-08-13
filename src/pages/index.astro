@@ -1,11 +1,7 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { SITE } from "../consts";
-import HomePage from "../components/HomePage.astro";
+import LocalizedPage from '../views/LocalizedPage.astro';
 
 export const prerender = true;
 ---
 
-<BaseLayout title="Inicio" description={`${SITE.name}. Proyectos, experiencia, habilidades y certificaciones.`}>
-	<HomePage locale="es" />
-</BaseLayout>
+<LocalizedPage locale="es" pageId="home" />

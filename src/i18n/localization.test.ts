@@ -91,6 +91,38 @@ describe('portfolio localization contract', () => {
 		expect(home).toContain('GitHubProfileCard locale={locale}');
 	});
 
+	it('routes every locale through the shared page component with explicit page identity', () => {
+		const sharedView = readFileSync(join(process.cwd(), 'src/views/LocalizedPage.astro'), 'utf8');
+		const routeFiles = [
+			['src/pages/index.astro', 'home'],
+			['src/pages/proyectos.astro', 'projects'],
+			['src/pages/experiencia.astro', 'experience'],
+			['src/pages/acerca.astro', 'about'],
+			['src/pages/certificaciones.astro', 'certifications'],
+			['src/pages/contacto.astro', 'contact'],
+			['src/pages/en/index.astro', 'home'],
+			['src/pages/en/projects.astro', 'projects'],
+			['src/pages/en/experience.astro', 'experience'],
+			['src/pages/en/about.astro', 'about'],
+			['src/pages/en/certifications.astro', 'certifications'],
+			['src/pages/en/contact.astro', 'contact'],
+		] as const;
+
+		for (const [file, page] of routeFiles) {
+			const route = readFileSync(join(process.cwd(), file), 'utf8');
+			expect(route).toContain('LocalizedPage');
+			expect(route).toContain(`pageId="${page}"`);
+		}
+		expect(sharedView).toContain('id="proyectos"');
+		expect(sharedView).toContain('class="grid list"');
+		expect(sharedView).toContain('class="grid sold-list"');
+		expect(sharedView).toContain('id="experiencia"');
+		expect(sharedView).toContain('id="acerca"');
+		expect(sharedView).toContain('id="certificaciones"');
+		expect(sharedView).toContain('id="contacto"');
+		expect(sharedView).toContain('<aside class="card aside" data-reveal>');
+	});
+
 	it('renders identical home structure and image sources for both locales', async () => {
 		const [spanish, english] = await Promise.all([
 			renderAstro(HomePage, { props: { locale: 'es' } }),

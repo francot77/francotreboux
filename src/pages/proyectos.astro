@@ -1,48 +1,7 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Section from '../components/Section.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import SoldProductCard from '../components/SoldProductCard.astro';
-import { projects } from '../data/projects';
-import { soldProducts } from '../data/soldProducts';
+import LocalizedPage from '../views/LocalizedPage.astro';
 
 export const prerender = true;
 ---
 
-<BaseLayout title="Proyectos" description="Proyectos con tecnologías utilizadas y enlaces a demos.">
-	<Section title="Proyectos" id="proyectos">
-		<div class="grid list">
-			{projects.map((project) => (
-				<ProjectCard project={project} />
-			))}
-		</div>
-	</Section>
-
-	<Section
-		title="Productos comerciales"
-		subtitle="Productos entregados a clientes. El código fuente es privado; podés consultar capturas seleccionadas."
-		id="productos-comerciales"
-	>
-		<div class="grid sold-list">
-			{soldProducts.map((product) => (
-				<SoldProductCard product={product} />
-			))}
-		</div>
-	</Section>
-</BaseLayout>
-
-<style>
-	.list {
-		grid-template-columns: 1fr;
-	}
-
-	@media (min-width: 940px) {
-		.list {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-
-	.sold-list {
-		grid-template-columns: 1fr;
-	}
-</style>
+<LocalizedPage locale="es" pageId="projects" />
