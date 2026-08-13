@@ -1,0 +1,75 @@
+- generic [active] [ref=e1]:
+  - link "Saltar al contenido" [ref=e2] [cursor=pointer]:
+    - /url: "#contenido"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: 💼
+      - 'link "Ir al inicio: Franco Treboux" [ref=e6] [cursor=pointer]':
+        - /url: /
+        - generic [ref=e7]: Franco Treboux
+      - navigation "Navegación principal" [ref=e8]:
+        - link "Inicio" [ref=e9] [cursor=pointer]:
+          - /url: /
+        - link "Proyectos" [ref=e10] [cursor=pointer]:
+          - /url: /proyectos
+        - link "Experiencia" [ref=e11] [cursor=pointer]:
+          - /url: /experiencia
+        - link "Acerca de mí" [ref=e12] [cursor=pointer]:
+          - /url: /acerca
+        - link "Certificaciones" [ref=e13] [cursor=pointer]:
+          - /url: /certificaciones
+        - link "Contacto" [ref=e14] [cursor=pointer]:
+          - /url: /contacto
+        - link "Switch to English" [ref=e15] [cursor=pointer]:
+          - /url: /en/contact
+          - text: EN
+      - generic [ref=e16]:
+        - link "GitHub" [ref=e17] [cursor=pointer]:
+          - /url: https://github.com/francot77
+        - button "Cambiar tema" [ref=e21] [cursor=pointer]
+  - main [ref=e32]:
+    - generic [ref=e34]:
+      - generic [ref=e35]:
+        - heading "Contacto" [level=2] [ref=e36]
+        - paragraph [ref=e37]: Escríbeme y conecta conmigo facilmente
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - heading "Envíame un mensaje" [level=3] [ref=e41]
+          - paragraph [ref=e42]: Cuéntame sobre tu proyecto o la oportunidad. Respondo normalmente en 24–48 horas.
+          - generic [ref=e43]:
+            - generic [ref=e44]:
+              - generic [ref=e45]:
+                - generic [ref=e46]: Nombre
+                - textbox "Nombre" [ref=e47]
+              - generic [ref=e48]:
+                - generic [ref=e49]: Email
+                - textbox "Email" [ref=e50]
+            - generic [ref=e51]:
+              - generic [ref=e52]: Mensaje
+              - textbox "Mensaje" [ref=e53]
+            - generic [ref=e54]:
+              - text: Website
+              - textbox [ref=e55]
+            - generic [ref=e56]:
+              - button "Enviar mensaje" [ref=e57] [cursor=pointer]
+              - paragraph [ref=e58]
+        - complementary [ref=e59]:
+          - heading "Enlaces" [level=3] [ref=e60]
+          - generic [ref=e61]:
+            - link "LinkedIn" [ref=e62] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/franco-treboux/
+            - link "GitHub" [ref=e63] [cursor=pointer]:
+              - /url: https://github.com/francot77
+            - link "Email" [ref=e67] [cursor=pointer]:
+              - /url: mailto:francotreboux@gmail.com
+          - generic [ref=e68]:
+            - paragraph [ref=e69]: Ubicación
+            - paragraph [ref=e70]: Villa Elisa, Entre Rios, Argentina
+  - contentinfo [ref=e71]:
+    - generic [ref=e72]:
+      - paragraph [ref=e73]: © 2026 Franco Treboux. Hecho con Astro.
+      - generic [ref=e74]:
+        - link "LinkedIn" [ref=e75] [cursor=pointer]:
+          - /url: https://www.linkedin.com/in/franco-treboux/
+        - link "GitHub" [ref=e76] [cursor=pointer]:
+          - /url: https://github.com/francot77

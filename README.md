@@ -53,7 +53,7 @@ Importante para SEO:
 
 ## Formulario de contacto
 
-El formulario intenta enviar vía `/api/contact`. Si no hay configuración de email, la respuesta seguirá siendo correcta (sin entrega).
+El formulario intenta enviar vía `/api/contact`. Si no hay configuración de email o el proveedor no acepta el mensaje, muestra un error localizado y no informa una entrega falsa.
 
 Para habilitar envío por SMTP, define estas variables de entorno:
 
@@ -66,7 +66,7 @@ Para habilitar envío por SMTP, define estas variables de entorno:
 
 ## Despliegue (Node)
 
-Este proyecto usa `@astrojs/node` en modo `standalone` para soportar el endpoint de contacto.
+Este proyecto usa `@astrojs/vercel` en modo server para soportar el endpoint de contacto.
 
 1. Ejecuta el build:
 

@@ -63,14 +63,16 @@ async function parseBody(request: Request): Promise<Record<string, unknown>> {
 	return {};
 }
 
-async function sendEmail(payload: ContactPayload): Promise<boolean> {
+type DeliveryResult = 'delivered' | 'not-configured' | 'failed';
+
+async function sendEmail(payload: ContactPayload): Promise<DeliveryResult> {
 	const host = process.env.SMTP_HOST;
 	const port = Number(process.env.SMTP_PORT ?? '587');
 	const user = process.env.SMTP_USER;
 	const pass = process.env.SMTP_PASS;
 	const to = process.env.CONTACT_TO;
 	const from = process.env.CONTACT_FROM ?? to;
-	if (!host || !to || !from) return false;
+	if (!host || !to || !from) return 'not-configured';
 
 	const transporter = nodemailer.createTransport({
 		host,
@@ -88,15 +90,19 @@ async function sendEmail(payload: ContactPayload): Promise<boolean> {
 		payload.message,
 	].join('\n');
 
-	await transporter.sendMail({
-		to,
-		from,
-		replyTo: payload.email,
-		subject,
-		text,
-	});
+	try {
+		await transporter.sendMail({
+			to,
+			from,
+			replyTo: payload.email,
+			subject,
+			text,
+		});
+	} catch {
+		return 'failed';
+	}
 
-	return true;
+	return 'delivered';
 }
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
@@ -115,7 +121,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 	const payload = normalizePayload(raw);
 
 	if (payload.website) {
-		return new Response(JSON.stringify({ ok: true, delivered: false }), {
+		return new Response(JSON.stringify({ ok: false, delivered: false, message: message(payload.locale, 'No se pudo enviar el mensaje.', 'The message could not be sent.') }), {
 			status: 200,
 			headers: { 'Content-Type': 'application/json' },
 		});
@@ -142,9 +148,27 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 		});
 	}
 
-	const delivered = await sendEmail(payload).catch(() => false);
+	const delivery = await sendEmail(payload);
+	if (delivery !== 'delivered') {
+		return new Response(JSON.stringify({
+			ok: false,
+			delivered: false,
+			message: message(
+				payload.locale,
+				delivery === 'not-configured'
+					? 'El formulario de contacto no está configurado para recibir mensajes.'
+					: 'No se pudo entregar el mensaje. Intenta nuevamente más tarde.',
+				delivery === 'not-configured'
+					? 'The contact form is not configured to receive messages.'
+					: 'The message could not be delivered. Please try again later.',
+			),
+		}), {
+			status: 503,
+			headers: { 'Content-Type': 'application/json' },
+		});
+	}
 
-	return new Response(JSON.stringify({ ok: true, delivered }), {
+	return new Response(JSON.stringify({ ok: true, delivered: true }), {
 		status: 200,
 		headers: { 'Content-Type': 'application/json' },
 	});
