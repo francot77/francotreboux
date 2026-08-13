@@ -1,0 +1,63 @@
+schema: spec-driven
+
+context: |
+  Project: faithful-field personal portfolio.
+  Stack: Astro 5, TypeScript 5.9, pnpm 11, Vercel adapter.
+  Architecture: Server-rendered Astro pages with reusable components and typed data modules.
+  Style: Existing Astro component patterns, tabs for Astro markup, single quotes in TypeScript.
+  Testing: Vitest with happy-dom and Testing Library; Astro check and ESLint are available.
+  Delivery: Automatic execution, single PR, review budget of 400 changed lines.
+
+strict_tdd: true
+
+testing:
+  detected: 2026-08-13
+  test_runner:
+    command: pnpm run test
+    framework: Vitest 4 with happy-dom
+  layers:
+    unit: true
+    integration: false
+    e2e: false
+  coverage:
+    available: false
+    command: ""
+  quality:
+    linter:
+      available: true
+      command: pnpm run lint
+    type_checker:
+      available: true
+      command: pnpm run typecheck
+    formatter:
+      available: false
+      command: ""
+  baseline:
+    tests: "6 files, 17 tests passed"
+    typecheck: "0 errors, 0 warnings, 0 hints"
+    lint: passed
+    build: "fails on Windows EPERM while @astrojs/vercel creates a pnpm symlink"
+
+rules:
+  proposal:
+    - Define user-visible intent, scope boundaries, and rollback plan for risky changes.
+  specs:
+    - Use Given/When/Then scenarios and RFC 2119 keywords (MUST, SHALL, SHOULD, MAY).
+  design:
+    - Follow existing Astro component and typed data-module conventions.
+    - Document architecture decisions and rationale.
+  tasks:
+    - Group tasks by phase with hierarchical numbering; keep each task completable in one session.
+  apply:
+    tdd: true
+    test_command: pnpm run test
+    guidelines:
+      - Follow existing code patterns and keep technical artifacts in English.
+  verify:
+    test_command: pnpm run test
+    typecheck_command: pnpm run typecheck
+    lint_command: pnpm run lint
+    build_command: pnpm run build
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas.

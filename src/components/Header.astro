@@ -3,14 +3,18 @@ import { SITE } from "../consts";
 import ThemeToggle from "./ThemeToggle.astro";
 import { siGithub } from "simple-icons";
 import BrandIcon from "./BrandIcon.astro";
+import type { Locale, PageId } from '../i18n/localization';
+import { equivalentUrl, getCopy } from '../i18n/localization';
+
+type Props = { locale?: Locale; pageId?: PageId };
+const { locale = 'es', pageId = 'home' } = Astro.props;
+const copy = getCopy(locale);
+const english = locale === 'en';
 
 const nav = [
-	{ href: "/", label: "Inicio" },
-	{ href: "/proyectos", label: "Proyectos" },
-	{ href: "/experiencia", label: "Experiencia" },
-	{ href: "/acerca", label: "Acerca de mí" },
-	{ href: "/certificaciones", label: "Certificaciones" },
-	{ href: "/contacto", label: "Contacto" },
+	{ page: 'home' as PageId, label: copy.nav.home }, { page: 'projects' as PageId, label: copy.nav.projects },
+	{ page: 'experience' as PageId, label: copy.nav.experience }, { page: 'about' as PageId, label: copy.nav.about },
+	{ page: 'certifications' as PageId, label: copy.nav.certifications }, { page: 'contact' as PageId, label: copy.nav.contact },
 ];
 ---
 
@@ -19,25 +23,26 @@ const nav = [
 		<span class="emoji" aria-hidden="true">💼</span>
 		<a
 			class="brand"
-			href="/"
+			href={equivalentUrl('home', locale)}
 			data-astro-prefetch="viewport"
-			aria-label={`Ir al inicio: ${SITE.name}`}
+			aria-label={english ? `Go to home: ${SITE.name}` : `Ir al inicio: ${SITE.name}`}
 		>
 			<span class="name">{SITE.name}</span>
 		</a>
 
-		<nav class="nav" aria-label="Navegación principal">
+		<nav class="nav" aria-label={locale === 'en' ? 'Main navigation' : 'Navegación principal'}>
 			{
 				nav.map((item) => (
 					<a
 						class="link"
-						href={item.href}
+						href={equivalentUrl(item.page, locale)}
 						data-astro-prefetch="viewport"
 					>
 						{item.label}
 					</a>
 				))
 			}
+			<a class="link" href={equivalentUrl(pageId, locale === 'es' ? 'en' : 'es')} aria-label={english ? 'Switch to Spanish' : 'Switch to English'}>{locale === 'es' ? 'EN' : 'ES'}</a>
 		</nav>
 
 		<div class="actions">
@@ -47,7 +52,7 @@ const nav = [
 				data-menu-open
 				aria-haspopup="dialog"
 			>
-				Menú
+				{english ? 'Menu' : 'Menú'}
 			</button>
 			<a
 				class="button button-ghost"
@@ -63,20 +68,20 @@ const nav = [
 	</div>
 </header>
 
-<dialog class="dialog" data-menu-dialog aria-label="Menú">
+<dialog class="dialog" data-menu-dialog aria-label={english ? 'Menu' : 'Menú'}>
 	<div class="dialogInner">
 		<div class="dialogTop">
 			<p class="dialogTitle">{SITE.name}</p>
 			<button class="button button-ghost" type="button" data-menu-close
-				>Cerrar</button
+				>{english ? 'Close' : 'Cerrar'}</button
 			>
 		</div>
-		<nav class="dialogNav" aria-label="Navegación móvil">
+		<nav class="dialogNav" aria-label={english ? 'Mobile navigation' : 'Navegación móvil'}>
 			{
 				nav.map((item) => (
 					<a
 						class="dialogLink"
-						href={item.href}
+					href={equivalentUrl(item.page, locale)}
 						data-menu-link
 						data-astro-prefetch="viewport"
 					>

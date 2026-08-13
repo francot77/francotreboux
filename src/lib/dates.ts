@@ -23,8 +23,7 @@ export function formatYearMonth(ym: string): string {
 	return `${monthNames[month - 1]} ${year}`;
 }
 
-export function formatDateRange(start: string, end?: string): string {
-	if (!end) return `${formatYearMonth(start)} · Actualidad`;
+export function formatDateRange(start: string, end?: string, locale: 'es' | 'en' = 'es'): string {
+	if (!end) return `${formatYearMonth(start)} · ${locale === 'en' ? 'Present' : 'Actualidad'}`;
 	return `${formatYearMonth(start)} · ${formatYearMonth(end)}`;
 }
-

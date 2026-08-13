@@ -7,6 +7,7 @@ type ContactPayload = {
 	message: string;
 	website?: string;
 	subjectTag?: string;
+	locale: 'es' | 'en';
 };
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
@@ -26,8 +27,11 @@ function normalizePayload(raw: Record<string, unknown>): ContactPayload {
 		message: asString(raw.message).trim(),
 		website: asString(raw.website).trim(),
 		subjectTag: asString(raw.subjectTag).trim(),
+		locale: asString(raw.locale) === 'en' ? 'en' : 'es',
 	};
 }
+
+function message(locale: 'es' | 'en', es: string, en: string): string { return locale === 'en' ? en : es; }
 
 function isValidEmail(email: string): boolean {
 	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -76,9 +80,9 @@ async function sendEmail(payload: ContactPayload): Promise<boolean> {
 	});
 
 	const tag = payload.subjectTag ? `[${payload.subjectTag}] ` : '';
-	const subject = `${tag}Nuevo mensaje desde el portfolio`;
+	const subject = `${tag}${payload.locale === 'en' ? 'New message from the portfolio' : 'Nuevo mensaje desde el portfolio'}`;
 	const text = [
-		`Nombre: ${payload.name}`,
+		`${payload.locale === 'en' ? 'Name' : 'Nombre'}: ${payload.name}`,
 		`Email: ${payload.email}`,
 		'',
 		payload.message,
@@ -105,6 +109,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 	}
 
 	const raw = await parseBody(request);
+	if (raw.locale && raw.locale !== 'es' && raw.locale !== 'en') {
+		return new Response(JSON.stringify({ ok: false, message: 'Unsupported locale.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+	}
 	const payload = normalizePayload(raw);
 
 	if (payload.website) {
@@ -115,21 +122,21 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 	}
 
 	if (payload.name.length < 2) {
-		return new Response(JSON.stringify({ ok: false, message: 'Ingresa un nombre válido.' }), {
+		return new Response(JSON.stringify({ ok: false, message: message(payload.locale, 'Ingresa un nombre válido.', 'Please enter a valid name.') }), {
 			status: 400,
 			headers: { 'Content-Type': 'application/json' },
 		});
 	}
 
 	if (!isValidEmail(payload.email)) {
-		return new Response(JSON.stringify({ ok: false, message: 'Ingresa un email válido.' }), {
+		return new Response(JSON.stringify({ ok: false, message: message(payload.locale, 'Ingresa un email válido.', 'Please enter a valid email.') }), {
 			status: 400,
 			headers: { 'Content-Type': 'application/json' },
 		});
 	}
 
 	if (payload.message.length < 10) {
-		return new Response(JSON.stringify({ ok: false, message: 'El mensaje debe tener al menos 10 caracteres.' }), {
+		return new Response(JSON.stringify({ ok: false, message: message(payload.locale, 'El mensaje debe tener al menos 10 caracteres.', 'Message must be at least 10 characters long.') }), {
 			status: 400,
 			headers: { 'Content-Type': 'application/json' },
 		});
@@ -142,4 +149,3 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 		headers: { 'Content-Type': 'application/json' },
 	});
 };
-

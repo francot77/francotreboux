@@ -1,22 +1,25 @@
 ---
 import type { ExperienceItem } from '../data/experience';
 import { formatDateRange } from '../lib/dates';
+import { localizeExperience, type Locale } from '../i18n/localization';
 
 type Props = {
 	items: ExperienceItem[];
+	locale?: Locale;
 };
 
-const { items } = Astro.props;
+const { items: sourceItems, locale = 'es' } = Astro.props;
+const items = localizeExperience(locale, sourceItems);
 ---
 
-<ol class="timeline" aria-label="Experiencia laboral">
+	<ol class="timeline" aria-label={locale === 'en' ? 'Professional experience' : 'Experiencia laboral'}>
 	{items.map((item) => (
 		<li class="item card" data-reveal>
 			<div class="dot" aria-hidden="true"></div>
 			<div class="content">
 				<div class="row">
 					<h3 class="role">{item.role}</h3>
-					<p class="range muted">{formatDateRange(item.start, item.end)}</p>
+						<p class="range muted">{formatDateRange(item.start, item.end, locale)}</p>
 				</div>
 				<p class="company muted">
 					<strong>{item.company}</strong>

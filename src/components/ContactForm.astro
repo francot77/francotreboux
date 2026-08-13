@@ -1,15 +1,17 @@
 ---
 type Props = {
 	subjectTag?: string;
+	locale?: 'es' | 'en';
 };
 
-const { subjectTag } = Astro.props;
+const { subjectTag, locale = 'es' } = Astro.props;
+const english = locale === 'en';
 ---
 
 <form
 	class="form"
 	method="post"
-	action="/contacto?enviado=1"
+	action={english ? '/en/contact?enviado=1' : '/contacto?enviado=1'}
 	data-netlify="true"
 	netlify-honeypot="website"
 	name="contact"
@@ -17,9 +19,10 @@ const { subjectTag } = Astro.props;
 >
 	<input type="hidden" name="form-name" value="contact" />
 	<input type="hidden" name="subjectTag" value={subjectTag ?? ''} />
+	<input type="hidden" name="locale" value={locale} />
 	<div class="row">
 		<label class="field">
-			<span class="label">Nombre</span>
+			<span class="label">{english ? 'Name' : 'Nombre'}</span>
 			<input class="input" type="text" name="name" autocomplete="name" required minlength="2" />
 		</label>
 		<label class="field">
@@ -29,7 +32,7 @@ const { subjectTag } = Astro.props;
 	</div>
 
 	<label class="field">
-		<span class="label">Mensaje</span>
+		<span class="label">{english ? 'Message' : 'Mensaje'}</span>
 		<textarea class="input textarea" name="message" required minlength="10" rows="6"></textarea>
 	</label>
 
@@ -39,7 +42,7 @@ const { subjectTag } = Astro.props;
 	</label>
 
 	<div class="actions">
-		<button class="button" type="submit">Enviar mensaje</button>
+			<button class="button" type="submit">{english ? 'Send message' : 'Enviar mensaje'}</button>
 		<p class="status muted" aria-live="polite" data-status></p>
 	</div>
 </form>
@@ -49,6 +52,7 @@ const { subjectTag } = Astro.props;
 		const form = document.querySelector('[data-contact-form]');
 		if (!(form instanceof HTMLFormElement)) return;
 		const status = form.querySelector('[data-status]');
+		const english = form.querySelector('input[name="locale"]')?.getAttribute('value') === 'en';
 		const setStatus = (text) => {
 			if (!status) return;
 			status.textContent = text;
@@ -56,7 +60,7 @@ const { subjectTag } = Astro.props;
 		form.addEventListener('submit', async (e) => {
 			if (!('fetch' in window)) return;
 			e.preventDefault();
-			setStatus('Enviando…');
+				setStatus(english ? 'Sending…' : 'Enviando…');
 			const submitButton = form.querySelector('button[type="submit"]');
 			if (submitButton instanceof HTMLButtonElement) submitButton.disabled = true;
 			try {
@@ -71,15 +75,15 @@ const { subjectTag } = Astro.props;
 				return;
 			}
 				const data = await res.json().catch(() => ({}));
-				if (!res.ok) {
-					setStatus(data?.message ?? 'No se pudo enviar. Intenta nuevamente.');
+					if (!res.ok || data?.delivered === false) {
+					setStatus(data?.message ?? (english ? 'Could not send. Please try again.' : 'No se pudo enviar. Intenta nuevamente.'));
 					if (submitButton instanceof HTMLButtonElement) submitButton.disabled = false;
 					return;
 				}
 				form.reset();
-				setStatus('Mensaje enviado. ¡Gracias!');
+				setStatus(english ? 'Message sent. Thank you!' : 'Mensaje enviado. ¡Gracias!');
 			} catch {
-				setStatus('Error de red. Intenta nuevamente.');
+					setStatus(english ? 'Network error. Please try again.' : 'Error de red. Intenta nuevamente.');
 				if (submitButton instanceof HTMLButtonElement) submitButton.disabled = false;
 			}
 		});

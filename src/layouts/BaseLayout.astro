@@ -3,22 +3,29 @@ import { SITE } from '../consts';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import '../styles/global.css';
+import type { Locale, PageId } from '../i18n/localization';
+import { equivalentUrl, getCopy } from '../i18n/localization';
 
 type Props = {
 	title?: string;
 	description?: string;
 	canonicalPath?: string;
+	locale?: Locale;
+	pageId?: PageId;
 };
 
-const { title, description, canonicalPath } = Astro.props;
+const { title, description, canonicalPath, locale = 'es', pageId = 'home' } = Astro.props;
+const localizedCopy = getCopy(locale);
 const pageTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.role}`;
-const pageDescription = description ?? SITE.description;
+const pageDescription = description ?? localizedCopy.meta.description;
 const baseUrl = Astro.site?.href ?? Astro.url.origin;
 const canonicalUrl = new URL(canonicalPath ?? Astro.url.pathname, baseUrl).toString();
+const alternateEs = new URL(equivalentUrl(pageId, 'es'), baseUrl).toString();
+const alternateEn = new URL(equivalentUrl(pageId, 'en'), baseUrl).toString();
 ---
 
 <!doctype html>
-<html lang="es">
+	<html lang={locale}>
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -26,13 +33,16 @@ const canonicalUrl = new URL(canonicalPath ?? Astro.url.pathname, baseUrl).toStr
 		<meta name="description" content={pageDescription} />
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0c10" />
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafafa" />
-		<link rel="canonical" href={canonicalUrl} />
+			<link rel="canonical" href={canonicalUrl} />
+			<link rel="alternate" hreflang="es" href={alternateEs} />
+			<link rel="alternate" hreflang="en" href={alternateEn} />
+			<link rel="alternate" hreflang="x-default" href={alternateEs} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<title>{pageTitle}</title>
 
 		<meta property="og:type" content="website" />
-		<meta property="og:locale" content="es_ES" />
+			<meta property="og:locale" content={localizedCopy.meta.locale} />
 		<meta property="og:title" content={pageTitle} />
 		<meta property="og:description" content={pageDescription} />
 		<meta property="og:url" content={canonicalUrl} />
@@ -66,12 +76,12 @@ const canonicalUrl = new URL(canonicalPath ?? Astro.url.pathname, baseUrl).toStr
 		</script>
 	</head>
 	<body>
-		<a class="sr-only" href="#contenido">Saltar al contenido</a>
-		<Header />
+			<a class="sr-only" href="#contenido">{locale === 'en' ? 'Skip to content' : 'Saltar al contenido'}</a>
+			<Header locale={locale} pageId={pageId} />
 		<main id="contenido">
 			<slot />
 		</main>
-		<Footer />
+			<Footer locale={locale} />
 		<script is:inline>
 			(() => {
 				const targets = Array.from(document.querySelectorAll('[data-reveal]'));

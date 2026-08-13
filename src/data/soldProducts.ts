@@ -6,7 +6,7 @@ export type SoldProductImage = {
 	height: number;
 };
 
-export type SoldProductStatus = 'Proyecto privado' | 'Producto comercial';
+export type SoldProductStatus = 'Proyecto privado' | 'Producto comercial' | 'Private project' | 'Commercial product';
 
 export type SoldProduct = {
 	slug: string;

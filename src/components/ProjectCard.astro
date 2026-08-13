@@ -5,13 +5,17 @@ import SoldProductGallery from "./SoldProductGallery.astro";
 import ProjectMedia from "./ProjectMedia.astro";
 import { siGithub } from "simple-icons";
 import BrandIcon from "./BrandIcon.astro";
+import { localizeProjects, type Locale } from '../i18n/localization';
 
 type Props = {
 	project: Project;
+	locale?: Locale;
 };
 
-const { project } = Astro.props;
-const { title, description, technologies, links, highlights } = project;
+const { project, locale = 'es' } = Astro.props;
+	const { title, technologies, links } = project;
+		const localizedProject = localizeProjects(locale, [project])[0];
+		const { description, highlights } = localizedProject;
 const dialogId = `${project.slug}-screenshots`;
 const gallery = project.coverImage
 	? [{ ...project.coverImage, caption: `Vista principal de ${title}` }]
@@ -30,7 +34,7 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 	{
 		project.coverImage ? (
 			<div class="cover">
-				<ProjectMedia image={project.coverImage} dialogId={dialogId} />
+					<ProjectMedia image={localizedProject.coverImage!} locale={locale} dialogId={dialogId} />
 			</div>
 		) : null
 	}
@@ -40,7 +44,7 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 	</div>
 
 	<div class="meta">
-		<ul class="tech" aria-label="Tecnologías">
+			<ul class="tech" aria-label={locale === 'en' ? 'Technologies' : 'Tecnologías'}>
 			{technologies.map((t) => (
 				<TechChip label={t} />
 			))}
@@ -56,7 +60,7 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 						target="_blank"
 						rel="noreferrer"
 					>
-						Ver
+							{locale === 'en' ? 'View' : 'Ver'}
 					</a>
 				) : null
 			}
@@ -70,14 +74,14 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 						rel="noreferrer"
 					>
 						<BrandIcon icon={siGithub} />
-						Repositorio
+							{locale === 'en' ? 'Repository' : 'Repositorio'}
 					</a>
 				) : null
 			}
 			{
 				links.caseStudy ? (
 					<a class="button button-sm" data-card-primary="case-study" href={links.caseStudy}>
-						Detalle
+							{locale === 'en' ? 'Details' : 'Detalle'}
 					</a>
 				) : null
 			}
@@ -86,7 +90,7 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 
 	{
 		highlights?.length ? (
-			<ul class="highlights" aria-label="Aspectos destacados">
+				<ul class="highlights" aria-label={locale === 'en' ? 'Highlights' : 'Aspectos destacados'}>
 				{highlights.slice(0, 3).map((h) => (
 					<li>{h}</li>
 				))}
@@ -95,7 +99,7 @@ const primaryAction = links.demo ? 'demo' : links.repo ? 'repo' : links.caseStud
 	}
 </article>
 
-{gallery.length ? <SoldProductGallery title={title} gallery={gallery} dialogId={dialogId} /> : null}
+	{gallery.length ? <SoldProductGallery title={title} gallery={gallery} locale={locale} dialogId={dialogId} /> : null}
 
 <style>
 	.project {
