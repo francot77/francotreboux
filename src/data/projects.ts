@@ -126,4 +126,44 @@ export const projects: Project[] = [
 				technologies: ['C#', '.NET 8', 'ESP32', 'Arduino/C++', 'Wi-Fi', 'UDP', 'vJoy']
 			}
 		},
+		{
+			slug: 'ac3bridge',
+			title: 'AC3Bridge',
+			description:
+				'Lleva sonido envolvente 5.1 por salida óptica en Windows, codificando a AC-3 en tiempo real para equipos que no traen esa función por hardware.',
+			technologies: ['C++', 'Windows Driver Kit', 'KMDF/ACX', 'WASAPI', 'FFmpeg', 'Win32', 'CMake'],
+			coverImage: {
+				src: '/projects/ac3bridge/screenshot.png',
+				alt: 'Panel de control de AC3Bridge mostrando los niveles por canal y el estado del puente en funcionamiento',
+				width: 450,
+				height: 649,
+			},
+			links: {
+				repo: 'https://github.com/francot77/AC3Bridge',
+			},
+			highlights: [
+				'Driver de kernel en KMDF/ACX que expone un dispositivo virtual de 5.1 a Windows',
+				'Captura de la mezcla en user mode con WASAPI loopback y codificación AC-3 en tiempo real',
+				'Entrega como bitstream IEC 61937 al dispositivo digital en modo exclusivo',
+				'Panel de control con niveles por canal y selección de salida verificada por sondeo'
+			],
+			caseStudy: {
+				problem: 'El S/PDIF óptico transporta solo dos canales de PCM, así que enviar 5.1 requiere comprimir el audio a AC-3. Windows no lo hace por software, y las placas que lo resuelven por hardware son minoría: en el resto, cualquier programa que reproduzca 5.1 termina mezclado a estéreo al elegir la salida digital.',
+				context: 'El proyecto cubre desde un driver de modo kernel hasta una aplicación de escritorio, sobre hardware de audio real y una salida digital conectada a un receiver.',
+				architecture: 'Un driver KMDF/ACX expone un endpoint de reproducción 5.1 que Windows materializa como un dispositivo más; el driver descarta las muestras y existe únicamente para que ese endpoint sea real, ya que no puede crearse desde una aplicación. La mezcla se captura después en user mode con WASAPI loopback, se aplica ganancia por canal, se codifica a AC-3 con FFmpeg, se enmarca como IEC 61937 y se entrega al dispositivo digital en modo exclusivo.',
+				decisions: [
+					'Mantener el driver como un sumidero sin procesamiento y capturar el audio en user mode, dejando la lógica de riesgo fuera del kernel.',
+					'Elegir el dispositivo de salida sondeando cuáles aceptan un portador IEC 61937 AC-3, en lugar de confiar en el orden de enumeración.',
+					'Registrar cada estado del ciclo de vida del driver en el registro de Windows, porque la salida de depuración del kernel no es utilizable en ejecuciones desatendidas.'
+				],
+				challenges: [
+					'El endpoint se enumeraba correctamente pero no podía abrirse en modo compartido hasta implementar el stream de tiempo real y declarar el soporte de notificaciones de buffer.',
+					'Sostener un reloj de presentación estable en el driver sin bloquear el camino de tiempo real.'
+				],
+				development: 'El desarrollo separó el driver, el motor de puente reutilizable y la interfaz, de modo que la aplicación de escritorio y la versión de línea de comandos comparten un único motor.',
+				validation: 'El repositorio incluye pruebas unitarias y cuatro compuertas de verificación en tiempo de ejecución contra el driver instalado: estado del dispositivo, contrato del endpoint, reproducción real de seis canales y captura por loopback comparando la energía por canal contra amplitudes conocidas. También hay una prueba de remoción del dispositivo durante la reproducción. No se publican mediciones de latencia extremo a extremo.',
+				outcome: 'El resultado es una cadena funcional entre software que reproduce 5.1 y un receiver conectado por óptico, publicada como código abierto. El driver está firmado con un certificado de prueba, por lo que requiere el modo de prueba de Windows.',
+				technologies: ['C++', 'Windows Driver Kit', 'KMDF', 'ACX', 'WASAPI', 'FFmpeg', 'IEC 61937', 'Win32', 'CMake']
+			}
+		},
 ];

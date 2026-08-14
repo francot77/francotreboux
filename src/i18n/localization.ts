@@ -49,6 +49,16 @@ const projectTranslations = {
 	fezlink: { description: 'SaaS platform for creators that turns a traditional bio link into a conversion analytics and optimization tool, built on an event-driven distributed architecture.', highlights: ['Event-driven architecture with asynchronous processing through Rust queues and workers', 'Event ingestion pipeline with in-memory batching and database bulk writes', 'SEO- and performance-optimized public frontend at the edge'] },
 	feztime: { description: 'Scheduling SaaS for small and medium businesses, focused on operational automation and frictionless bookings.', highlights: ['Real-time availability and booking management', 'Administrative dashboard for schedules and customers', 'Multi-tenant-ready architecture'] },
 	formulawheelbridge: { description: 'Turns DIY steering-wheel controls into a wireless gamepad for Windows.', coverAlt: 'FormulaWheelBridge panel showing wheel inputs and the vJoy connection' },
+	ac3bridge: {
+		description: 'Carries 5.1 surround over optical output on Windows by encoding to AC-3 in real time, for machines whose hardware does not provide it.',
+		coverAlt: 'AC3Bridge control panel showing per-channel levels and the bridge running',
+		highlights: [
+			'KMDF/ACX kernel driver that exposes a virtual 5.1 device to Windows',
+			'User-mode capture of the engine mix through WASAPI loopback with real-time AC-3 encoding',
+			'Delivery as an IEC 61937 bitstream to the digital device in exclusive mode',
+			'Control panel with per-channel levels and an output list verified by probing'
+		]
+	},
 } as const;
 
 const caseStudyTranslations: Record<string, CaseStudy> = {
@@ -80,6 +90,24 @@ const caseStudyTranslations: Record<string, CaseStudy> = {
 		validation: 'Validation used real hardware and the input and vJoy connection view shown in the project screenshot; no latency or reliability metrics are published.',
 		outcome: 'The project provides a functional bridge between DIY steering-wheel controls and a wireless Windows gamepad, with a public repository.',
 		technologies: ['C#', '.NET 8', 'ESP32', 'Arduino/C++', 'Wi-Fi', 'UDP', 'vJoy']
+	},
+	ac3bridge: {
+		problem: 'Optical S/PDIF carries only two channels of PCM, so sending 5.1 across it requires compressing the audio to AC-3. Windows does not do this in software, and the sound cards that solve it in hardware are a minority: on the rest, any program playing 5.1 ends up downmixed to stereo the moment the digital output is selected.',
+		context: 'The project spans a kernel-mode driver through to a desktop application, running against real audio hardware and a digital output connected to a receiver.',
+		architecture: 'A KMDF/ACX driver exposes a 5.1 render endpoint that Windows materializes as an ordinary device; the driver discards the samples and exists only so that endpoint is real, since one cannot be created from an application. The mix is then captured in user mode through WASAPI loopback, per-channel gain is applied, FFmpeg encodes it to AC-3, the result is framed as IEC 61937, and it is delivered to the digital device in exclusive mode.',
+		decisions: [
+			'Keep the driver a sink with no processing and capture the audio in user mode, leaving the risky logic outside the kernel.',
+			'Choose the output device by probing which ones accept an IEC 61937 AC-3 carrier rather than trusting enumeration order.',
+			'Record every driver lifecycle status in the Windows registry, because kernel debug output is unusable in unattended runs.'
+		],
+		challenges: [
+			'The endpoint enumerated correctly yet could not be opened in shared mode until the real-time stream was implemented and buffer-notification support was declared.',
+			'Holding a stable presentation clock in the driver without blocking the real-time path.'
+		],
+		development: 'Development separated the driver, a reusable bridge engine, and the interface, so the desktop application and the command-line version share a single engine.',
+		validation: 'The repository includes unit tests and four runtime gates against the installed driver: device state, endpoint contract, real six-channel playback, and loopback capture comparing per-channel energy against known amplitudes. A device-removal-during-playback test is also included. No end-to-end latency measurements are published.',
+		outcome: 'The result is a working chain between software playing 5.1 and a receiver connected over optical, released as open source. The driver is signed with a test certificate, so it requires Windows test mode.',
+		technologies: ['C++', 'Windows Driver Kit', 'KMDF', 'ACX', 'WASAPI', 'FFmpeg', 'IEC 61937', 'Win32', 'CMake']
 	}
 };
 
