@@ -5,11 +5,13 @@ import {
 	siAstro,
 	siCplusplus,
 	siCloudflare,
+	siCmake,
 	siCss,
 	siDotnet,
 	siElectron,
 	siEspressif,
 	siExpo,
+	siFfmpeg,
 	siGit,
 	siHtml5,
 	siJavascript,
@@ -43,6 +45,8 @@ const techIcons: Record<string, SimpleIcon> = {
 	Astro: siAstro,
 	Arduino: siArduino,
 	Cplusplus: siCplusplus,
+	CMake: siCmake,
+	FFmpeg: siFfmpeg,
 	Dotnet: siDotnet,
 	Electron: siElectron,
 	Espressif: siEspressif,
@@ -75,7 +79,7 @@ const techIcons: Record<string, SimpleIcon> = {
 function resolveTechIcon(tech: string): SimpleIcon | undefined {
 	if (techIcons[tech]) return techIcons[tech];
 	if (tech === "C#" || tech === ".NET 8") return techIcons.Dotnet;
-	if (tech === "Arduino/C++") return techIcons.Cplusplus;
+	if (tech === "Arduino/C++" || tech === "C++") return techIcons.Cplusplus;
 	if (tech === "ESP32-S3") return techIcons.Espressif;
 	if (tech === "Cloudflare Edge") return techIcons.Cloudflare;
 	if (tech === "Tailwind") return techIcons["Tailwind CSS"];
