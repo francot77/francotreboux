@@ -56,8 +56,13 @@ const labels = locale === 'en'
 
 	for (const gallery of galleries) {
 		const dialog = gallery as HTMLDialogElement;
+		// Pair a dialog with its own triggers through aria-controls. The dialog
+		// is a sibling of the card, not a descendant, so walking up to the
+		// nearest [data-reveal] landed on an ancestor holding every card and
+		// collected every trigger on the page: opening one card's image opened
+		// the other cards' dialogs on top of it.
 		const openButtons = Array.from(
-			gallery.closest('[data-reveal]')?.querySelectorAll<HTMLButtonElement>('[data-gallery-open]') ?? [],
+			document.querySelectorAll<HTMLButtonElement>(`[data-gallery-open][aria-controls="${dialog.id}"]`),
 		);
 		const closeButton = gallery.querySelector<HTMLButtonElement>('[data-gallery-close]');
 		const image = gallery.querySelector<HTMLImageElement>('[data-gallery-image]');
