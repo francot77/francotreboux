@@ -240,3 +240,19 @@ svg {
         transition: none;
     }
 }
+
+/* Scroll lock while a modal dialog is open.
+   showModal() makes the page inert but leaves it scrollable behind the
+   backdrop; the padding replaces the width the hidden scrollbar gave up so
+   the layout does not shift when a dialog opens. */
+html[data-dialog-open] {
+    overflow: hidden;
+    padding-right: var(--scrollbar-width, 0px);
+}
+
+/* Pinning the body is what holds iOS still, where overflow:hidden on the root
+   is ignored. It sits inside the padded root, so the width stays correct. */
+html[data-dialog-open] body {
+    position: fixed;
+    width: 100%;
+}

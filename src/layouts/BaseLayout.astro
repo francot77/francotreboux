@@ -83,6 +83,59 @@ const alternateEn = new URL(equivalentUrl(pageId, 'en'), baseUrl).toString();
 		</main>
 			<Footer locale={locale} />
 		<script is:inline>
+			// A native modal dialog makes the page inert but does not stop it
+			// scrolling behind the backdrop. Lock the page while any dialog is
+			// open, in one place, so the header menu, the case studies and the
+			// image gallery cannot drift apart.
+			(() => {
+				const root = document.documentElement;
+				let lockedScrollY = 0;
+
+				const anyDialogOpen = () => document.querySelector('dialog[open]') !== null;
+
+				const lock = () => {
+					if (root.hasAttribute('data-dialog-open')) return;
+					// Hiding the scrollbar reclaims its width and shifts the layout,
+					// so give it back as padding.
+					const scrollbar = window.innerWidth - root.clientWidth;
+					lockedScrollY = window.scrollY;
+					root.style.setProperty('--scrollbar-width', scrollbar + 'px');
+					root.setAttribute('data-dialog-open', '');
+					// iOS ignores overflow:hidden on the root, so the body is also
+					// pinned in place and restored to the same offset on close.
+					document.body.style.top = -lockedScrollY + 'px';
+				};
+
+				const unlock = () => {
+					if (!root.hasAttribute('data-dialog-open')) return;
+					root.removeAttribute('data-dialog-open');
+					document.body.style.top = '';
+					window.scrollTo(0, lockedScrollY);
+				};
+
+				const sync = () => (anyDialogOpen() ? lock() : unlock());
+
+				// Watching the open attribute covers every path that closes a
+				// dialog, including Escape and form submission, which do not go
+				// through any click handler.
+				const observer = new MutationObserver(sync);
+				const watch = (dialog) => observer.observe(dialog, { attributes: true, attributeFilter: ['open'] });
+				for (const dialog of document.querySelectorAll('dialog')) watch(dialog);
+				new MutationObserver((records) => {
+					for (const record of records) {
+						for (const node of record.addedNodes) {
+							if (node.nodeType !== 1) continue;
+							if (node.tagName === 'DIALOG') watch(node);
+							else node.querySelectorAll?.('dialog').forEach(watch);
+						}
+					}
+					sync();
+				}).observe(document.body, { childList: true, subtree: true });
+
+				sync();
+			})();
+		</script>
+		<script is:inline>
 			(() => {
 				const targets = Array.from(document.querySelectorAll('[data-reveal]'));
 				if (targets.length === 0) return;
