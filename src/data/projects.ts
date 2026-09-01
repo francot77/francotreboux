@@ -68,8 +68,6 @@ export const projects: Project[] = [
 				],
 				challenges: ['Coordinar el recorrido de eventos entre componentes con responsabilidades y tiempos de procesamiento distintos.'],
 				development: 'El desarrollo se enfocó en dividir el sistema por responsabilidades y en diseñar un pipeline explícito desde la ingestión hasta la persistencia.',
-				validation: 'No se documentan en el repositorio pruebas específicas ni métricas de rendimiento publicadas.',
-				outcome: 'Quedó una base distribuida y orientada a eventos para una plataforma SaaS, sin afirmar métricas de escala o rendimiento no documentadas.',
 				technologies: ['Next.js', 'TypeScript', 'Node.js', 'Rust workers', 'RabbitMQ', 'MongoDB', 'Cloudflare Edge', 'Vercel', 'Railway']
 			}
 	},
@@ -113,7 +111,7 @@ export const projects: Project[] = [
 			},
 			caseStudy: {
 				problem: 'Los controles físicos de un volante casero necesitaban convertirse en entradas reconocibles por juegos de Windows.',
-				context: 'El proyecto integra hardware real con software de escritorio y mantiene el repositorio público junto con una captura del panel de control.',
+				context: 'Como proyecto técnico personal, integra hardware real con software de escritorio y mantiene el repositorio público junto con una captura del panel de control.',
 				architecture: 'El ESP32-S3 lee los controles mediante Arduino/C++, envía los datos por Wi-Fi usando UDP y una aplicación C#/.NET 8 los recibe para exponerlos a Windows a través de vJoy.',
 				decisions: [
 					'Usar Wi-Fi/UDP como enlace entre el microcontrolador y la aplicación de escritorio.',
@@ -121,7 +119,7 @@ export const projects: Project[] = [
 				],
 				challenges: ['Traducir señales de controles físicos a un formato que una aplicación de Windows y los juegos puedan consumir como gamepad.'],
 				development: 'El desarrollo conectó firmware Arduino/C++, transporte UDP y una interfaz WinForms en C#/.NET 8 alrededor de un dispositivo físico.',
-				validation: 'La validación se realizó con hardware real y con la visualización de entradas y conexión vJoy disponible en la captura del proyecto; no se publican métricas de latencia o confiabilidad.',
+				validation: 'La validación se realizó con hardware real y con la visualización de entradas y conexión vJoy disponible en la captura del proyecto.',
 				outcome: 'El proyecto ofrece un puente funcional entre controles de volante DIY y un gamepad inalámbrico para Windows, con repositorio público.',
 				technologies: ['C#', '.NET 8', 'ESP32', 'Arduino/C++', 'Wi-Fi', 'UDP', 'vJoy']
 			}

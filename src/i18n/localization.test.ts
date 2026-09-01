@@ -32,7 +32,7 @@ describe('portfolio localization contract', () => {
 	});
 
 	it('keeps recruiter-facing home positioning equivalent across locales', () => {
-		expect(getCopy('es').home.role).toBe('Full Stack Software Engineer');
+		expect(getCopy('es').home.role).toBe('Full-Stack Developer');
 		expect(getCopy('en').home.role).toBe(getCopy('es').home.role);
 		expect(getCopy('es').home.intro).toContain('Node.js');
 		expect(getCopy('en').home.intro).toContain('backend systems');
@@ -68,7 +68,7 @@ describe('portfolio localization contract', () => {
 
 		expect(spanish[0].caseStudy?.architecture).toContain('RabbitMQ');
 		expect(english[0].caseStudy?.architecture).toContain('RabbitMQ');
-		expect(english[0].caseStudy?.outcome).toContain('without claiming undocumented');
+		expect(english[0].caseStudy?.validation).toBeUndefined();
 		expect(english[2].caseStudy?.architecture).toContain('vJoy');
 		expect(english.map(({ slug }) => slug)).toEqual(projects.map(({ slug }) => slug));
 	});
@@ -77,6 +77,7 @@ describe('portfolio localization contract', () => {
 		expect(localizeExperience('en', experience).map((item) => item.company)).toEqual(['Freelance', 'Canal 5 (Delco Digital)', 'Freelance']);
 		expect(localizeCertifications('en', certifications)[1].name).toBe('Introduction to AI development');
 		expect(localizeSkills('en', skillGroups)[1].title).toBe('Backend / Infrastructure');
+		expect(localizeSkills('en', skillGroups)[3]).toEqual({ title: 'Systems / Embedded', items: ['C++', 'C# / .NET', 'ESP32', 'Arduino', 'Networking'] });
 		expect(localizeSoldProducts('en', soldProducts)[0].status).toBe('Private project');
 		expect(localizeSoldProducts('en', soldProducts)[0].gallery?.[0].src).toBe(soldProducts[0].gallery?.[0].src);
 	});

@@ -16,5 +16,8 @@ export const skillGroups: SkillGroup[] = [
 		title: 'Tooling',
 		items: ['Git', 'CI/CD', 'Testing'],
 	},
+	{
+		title: 'Systems / Embedded',
+		items: ['C++', 'C# / .NET', 'ESP32', 'Arduino', 'Networking'],
+	},
 ];
-

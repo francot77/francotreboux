@@ -59,6 +59,7 @@ const alternateEn = new URL(equivalentUrl(pageId, 'en'), baseUrl).toString();
 				'@type': 'Person',
 				name: SITE.name,
 				jobTitle: SITE.role,
+				address: { '@type': 'PostalAddress', addressLocality: SITE.location },
 				url: baseUrl,
 				email: SITE.email ? `mailto:${SITE.email}` : undefined,
 				sameAs: Object.values(SITE.social).filter(Boolean),

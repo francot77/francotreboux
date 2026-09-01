@@ -19,8 +19,8 @@ describe('GitHubProfileCard', () => {
 		expect(card?.querySelector('img')?.getAttribute('alt')).toBe('Avatar de Franco Treboux');
 		expect(card?.querySelector('img')?.getAttribute('width')).toBe('460');
 		expect(card?.querySelector('img')?.getAttribute('height')).toBe('460');
-		expect(card?.textContent).toContain('Full Stack Developer');
-		expect(card?.textContent).toContain('Argentina');
+		expect(card?.textContent).toContain('Full-Stack Developer');
+		expect(card?.textContent).toContain('CABA, Argentina');
 		expect(card?.textContent).toContain('33 repositorios públicos');
 		expect(card?.querySelector('.brandIcon svg')).not.toBeNull();
 	});

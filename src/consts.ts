@@ -1,7 +1,7 @@
 export const SITE = {
     name: 'Franco Treboux',
-    role: 'Full Stack Developer',
-    location: 'Villa Elisa, Entre Rios, Argentina',
+    role: 'Full-Stack Developer',
+    location: 'CABA, Argentina',
     email: 'francotreboux@gmail.com',
     siteUrl: 'https://francotreboux.vercel.app/',
     description:
