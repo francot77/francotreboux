@@ -91,14 +91,14 @@ const text = english
 
 	{pageId === 'projects' ? (
 		<>
-			<Section title={copy.nav.projects} id="proyectos">
-				<div class="grid list">
-					{projects.map((project) => <ProjectCard project={project} locale={locale} />)}
-				</div>
-			</Section>
 			<Section title={english ? 'Commercial products' : 'Productos comerciales'} subtitle={text.commercialSubtitle} id="productos-comerciales">
 				<div class="grid sold-list">
 					{soldProducts.map((product) => <SoldProductCard product={product} locale={locale} />)}
+				</div>
+			</Section>
+			<Section title={copy.nav.projects} id="proyectos">
+				<div class="grid list">
+					{projects.map((project) => <ProjectCard project={project} locale={locale} />)}
 				</div>
 			</Section>
 		</>

@@ -136,24 +136,6 @@ const alternateEn = new URL(equivalentUrl(pageId, 'en'), baseUrl).toString();
 				sync();
 			})();
 		</script>
-		<script is:inline>
-			(() => {
-				const targets = Array.from(document.querySelectorAll('[data-reveal]'));
-				if (targets.length === 0) return;
-				const observer = new IntersectionObserver(
-					(entries) => {
-						for (const entry of entries) {
-							if (!entry.isIntersecting) continue;
-							const el = entry.target;
-							el.setAttribute('data-reveal-visible', 'true');
-							observer.unobserve(el);
-						}
-					},
-					{ rootMargin: '0px 0px -10% 0px', threshold: 0.15 },
-				);
-				for (const el of targets) observer.observe(el);
-			})();
-		</script>
 	</body>
 </html>
 

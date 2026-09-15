@@ -215,27 +215,7 @@ svg {
     border: 0;
 }
 
-[data-reveal] {
-    opacity: 0;
-    transform: translateY(10px);
-    filter: blur(2px);
-    transition: opacity 420ms var(--ease), transform 420ms var(--ease), filter 420ms var(--ease);
-}
-
-[data-reveal][data-reveal-visible='true'] {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-}
-
 @media (prefers-reduced-motion: reduce) {
-    [data-reveal] {
-        opacity: 1;
-        transform: none;
-        filter: none;
-        transition: none;
-    }
-
     .button {
         transition: none;
     }
