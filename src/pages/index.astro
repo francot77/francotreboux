@@ -1,4 +1,5 @@
 ---
+import LocalizedPage from '../views/LocalizedPage.astro';
 export const prerender = true;
-return Astro.redirect('/en/');
 ---
+<LocalizedPage locale="en" pageId="home" />

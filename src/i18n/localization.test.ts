@@ -111,10 +111,6 @@ describe('portfolio localization contract', () => {
 
 		for (const [file, page] of routeFiles) {
 			const route = readFileSync(join(process.cwd(), file), 'utf8');
-			if (file === 'src/pages/index.astro') {
-				expect(route).toContain("Astro.redirect('/en/')");
-				continue;
-			}
 			expect(route).toContain('LocalizedPage');
 			expect(route).toContain(`pageId="${page}"`);
 		}
