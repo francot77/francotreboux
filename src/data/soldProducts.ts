@@ -101,20 +101,4 @@ export const soldProducts: SoldProduct[] = [
 			},
 		],
 	},
-	{
-		slug: 'delinteriorgshop',
-		title: 'Del Interior GShop',
-		status: 'Producto comercial',
-		summary:
-			'E-commerce para tienda física con integración de pasarela de pago y optimización para posicionamiento orgánico.',
-		technologies: ['WordPress', 'WooCommerce', 'MercadoPago API', 'SEO'],
-		links: {
-			demo: 'https://delinteriorgrowshop.com.ar',
-		},
-		outcome: [
-			'Implementación de tienda online con catálogo dinámico',
-			'Integración de pagos mediante MercadoPago',
-			'Optimización técnica y de contenido para buscadores',
-		],
-	},
 ];

@@ -67,27 +67,6 @@ describe('SoldProductCard', () => {
 		expect(fragment.querySelectorAll('[data-gallery-open]')).toHaveLength(2);
 	});
 
-	it('renders a commercial product without inventing image assets', async () => {
-		const product = soldProducts.find(({ slug }) => slug === 'delinteriorgshop');
-		if (!product) throw new Error('Del Interior GShop product is missing');
-
-		const fragment = await renderAstro(SoldProductCard, { props: { product } });
-
-		expect(fragment.textContent).toContain('Del Interior GShop');
-		expect(fragment.querySelector('.eyebrow')?.textContent).toBe('Producto comercial');
-		expect(fragment.textContent).not.toContain('Proyecto privado');
-		expect(fragment.textContent).toContain('E-commerce para tienda física');
-		expect(fragment.textContent).toContain('WooCommerce');
-		expect(fragment.querySelector('a')?.getAttribute('href')).toBe('https://delinteriorgrowshop.com.ar');
-		expect(fragment.querySelector('img')).toBeNull();
-		expect(fragment.querySelector('[data-gallery-open]')).toBeNull();
-		expect(fragment.querySelector('article')?.getAttribute('data-card-primary')).toBe('demo');
-		expect(fragment.querySelector('a[data-card-primary="demo"]')?.getAttribute('href')).toBe(
-			'https://delinteriorgrowshop.com.ar',
-		);
-		expect(fragment.querySelector('dialog')).toBeNull();
-	});
-
 	it('localizes the product content and gallery controls in English', async () => {
 		const fragment = await renderAstro(SoldProductCard, { props: { product: soldProducts[0], locale: 'en' } });
 

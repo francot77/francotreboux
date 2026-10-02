@@ -6,6 +6,7 @@ import { projects } from '../data/projects';
 import { skillGroups } from '../data/skills';
 import { soldProducts } from '../data/soldProducts';
 import HomePage from '../components/HomePage.astro';
+import LocalizedPage from '../views/LocalizedPage.astro';
 import { renderAstro } from '../test/renderAstro';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -74,12 +75,29 @@ describe('portfolio localization contract', () => {
 	});
 
 	it('projects every portfolio dataset without changing identity or order', () => {
-		expect(localizeExperience('en', experience).map((item) => item.company)).toEqual(['Freelance', 'Canal 5 (Delco Digital)', 'Freelance']);
+		expect(soldProducts.map(({ slug }) => slug)).toEqual(['saascomercio']);
+		 expect(localizeExperience('en', experience).map((item) => item.company)).toEqual(['Freelance', 'Canal 5 (Delco Digital)', 'Freelance']);
 		expect(localizeCertifications('en', certifications)[1].name).toBe('Introduction to AI development');
 		expect(localizeSkills('en', skillGroups)[1].title).toBe('Backend / Infrastructure');
 		expect(localizeSkills('en', skillGroups)[3]).toEqual({ title: 'Systems / Embedded', items: ['C++', 'C# / .NET', 'ESP32', 'Arduino', 'Networking'] });
 		expect(localizeSoldProducts('en', soldProducts)[0].status).toBe('Private project');
 		expect(localizeSoldProducts('en', soldProducts)[0].gallery?.[0].src).toBe(soldProducts[0].gallery?.[0].src);
+	});
+
+	it('renders the localized AI agents section on the full About page', async () => {
+		const [spanish, english] = await Promise.all([
+			renderAstro(LocalizedPage, { props: { locale: 'es', pageId: 'about' } }),
+			renderAstro(LocalizedPage, { props: { locale: 'en', pageId: 'about' } }),
+		]);
+
+		expect(spanish.querySelector('#agentes-ia')?.textContent).toContain('Agentes de IA');
+		expect(english.querySelector('#agentes-ia')?.textContent).toContain('AI agents');
+		for (const fragment of [spanish, english]) {
+			expect(fragment.querySelector('#agentes-ia')?.textContent).toContain('Claude');
+			expect(fragment.querySelector('#agentes-ia')?.textContent).toContain('OpenCode');
+			expect(fragment.querySelector('#agentes-ia .brandIcon')).not.toBeNull();
+			expect(fragment.querySelector('#agentes-ia .agent-mark')?.textContent).toBe('AI');
+		}
 	});
 
 	it('keeps the home section structure shared across locales', () => {

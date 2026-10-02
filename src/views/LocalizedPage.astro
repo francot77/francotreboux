@@ -9,7 +9,7 @@ import SoldProductCard from '../components/SoldProductCard.astro';
 import TechChip from '../components/TechChip.astro';
 import HomePage from '../components/HomePage.astro';
 import BrandIcon from '../components/BrandIcon.astro';
-import { siGithub } from 'simple-icons';
+import { siClaude, siGithub } from 'simple-icons';
 import { SITE } from '../consts';
 import { projects } from '../data/projects';
 import { experience } from '../data/experience';
@@ -65,9 +65,13 @@ const text = english
 		messageTitle: 'Send me a message',
 		messageCopy: 'Tell me about your project or opportunity. I usually reply within 24–48 hours.',
 		links: 'Links',
-		location: 'Location',
-		notice: 'Message received. Thank you! I will reply soon.',
-	}
+			location: 'Location',
+			notice: 'Message received. Thank you! I will reply soon.',
+			aiAgentsTitle: 'AI agents',
+			aiAgentsSubtitle: 'Tools I use to support research, implementation, and review.',
+			claudeDescription: 'AI assistant for research, implementation, and technical review.',
+			opencodeDescription: 'Open-source coding agent for working directly in the development environment.',
+		}
 	: {
 		commercialSubtitle: 'Productos entregados a clientes. El código fuente es privado; podés consultar capturas seleccionadas.',
 		experienceTitle: 'Experiencia laboral',
@@ -81,9 +85,13 @@ const text = english
 		messageTitle: 'Envíame un mensaje',
 		messageCopy: 'Cuéntame sobre tu proyecto o la oportunidad. Respondo normalmente en 24–48 horas.',
 		links: 'Enlaces',
-		location: 'Ubicación',
-		notice: 'Mensaje recibido. ¡Gracias! Te responderé pronto.',
-	};
+			location: 'Ubicación',
+			notice: 'Mensaje recibido. ¡Gracias! Te responderé pronto.',
+			aiAgentsTitle: 'Agentes de IA',
+			aiAgentsSubtitle: 'Herramientas que uso para apoyar la investigación, implementación y revisión.',
+			claudeDescription: 'Asistente de IA para investigación, implementación y revisión técnica.',
+			opencodeDescription: 'Agente de código open source para trabajar directamente en el entorno de desarrollo.',
+		};
 ---
 
 <BaseLayout title={page?.title} description={page?.description} locale={locale} pageId={pageId}>
@@ -128,6 +136,21 @@ const text = english
 		</Section>
 	) : null}
 
+		{pageId === 'about' ? (
+			<Section title={text.aiAgentsTitle} subtitle={text.aiAgentsSubtitle} id="agentes-ia">
+				<div class="grid agents-list">
+					<article class="card agent-card" data-reveal>
+						<div class="agent-heading"><BrandIcon icon={siClaude} label="Claude" /><h3 class="h3">Claude</h3></div>
+						<p class="muted">{text.claudeDescription}</p>
+					</article>
+					<article class="card agent-card" data-reveal>
+						<div class="agent-heading"><span class="agent-mark" aria-hidden="true">AI</span><h3 class="h3">OpenCode</h3></div>
+						<p class="muted">{text.opencodeDescription}</p>
+					</article>
+				</div>
+			</Section>
+		) : null}
+
 	{pageId === 'certifications' ? (
 		<Section title={copy.nav.certifications} id="certificaciones">
 			<div class="grid list">
@@ -169,6 +192,12 @@ const text = english
 	.bio { display: grid; gap: 12px; }
 	.bio p { margin: 0; }
 	.skills { display: grid; gap: 14px; }
+	.agents-list { grid-template-columns: 1fr; }
+	.agent-card { padding: 18px; display: grid; gap: 12px; }
+	.agent-card p { margin: 0; }
+	.agent-heading { display: flex; align-items: center; gap: 10px; }
+	.agent-heading .brandIcon { font-size: 24px; }
+	.agent-mark { display: inline-grid; width: 24px; height: 24px; place-items: center; border: 1px solid var(--border); border-radius: 7px; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: 0.04em; }
 	.groupTitle { margin: 0 0 10px; font-weight: 900; letter-spacing: -0.2px; }
 	.layout { grid-template-columns: 1fr; align-items: start; }
 	.panel, .aside { padding: 18px; display: grid; gap: 12px; }
@@ -181,6 +210,7 @@ const text = english
 
 	@media (min-width: 940px) {
 		.grid.list { grid-template-columns: repeat(2, 1fr); }
+		.agents-list { grid-template-columns: repeat(2, 1fr); }
 		.wrap { grid-template-columns: 1.2fr 0.8fr; align-items: start; }
 		.layout { grid-template-columns: 1.25fr 0.75fr; }
 	}

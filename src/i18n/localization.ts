@@ -144,5 +144,16 @@ export function localizeSkills(locale: Locale, records: readonly SkillGroup[]): 
 }
 
 export function localizeSoldProducts(locale: Locale, records: readonly SoldProduct[]): SoldProduct[] {
-	return records.map((record) => locale === 'es' ? { ...record } : { ...record, status: record.status === 'Proyecto privado' ? 'Private project' : 'Commercial product', summary: record.slug === 'saascomercio' ? 'Business management system for retailers, designed to centralize products, sales, inventory, and daily operations in one tool.' : 'E-commerce for a physical store with payment gateway integration and organic search optimization.', outcome: record.slug === 'saascomercio' ? ['Commercial product sold and delivered to an operating business', 'Counter and table sales flows with inventory control', 'Operations panel for managing products, customers, and suppliers'] : ['Online store with dynamic catalog', 'MercadoPago payment integration', 'Technical and content optimization for search engines'], coverImage: record.coverImage && { ...record.coverImage, alt: record.coverImage.alt.replace('Panel principal', 'Main dashboard'), caption: 'Main dashboard for checking business status' }, gallery: record.gallery?.map((image) => ({ ...image, alt: image.alt.replace('Panel principal', 'Main dashboard'), caption: 'Screen from daily business operations' })) });
+	return records.map((record) => {
+		if (locale === 'es') return { ...record };
+		if (record.slug !== 'saascomercio') throw new Error(`Missing English sold product translation: ${record.slug}`);
+		return {
+			...record,
+			status: 'Private project',
+			summary: 'Business management system for retailers, designed to centralize products, sales, inventory, and daily operations in one tool.',
+			outcome: ['Commercial product sold and delivered to an operating business', 'Counter and table sales flows with inventory control', 'Operations panel for managing products, customers, and suppliers'],
+			coverImage: record.coverImage && { ...record.coverImage, alt: record.coverImage.alt.replace('Panel principal', 'Main dashboard'), caption: 'Main dashboard for checking business status' },
+			gallery: record.gallery?.map((image) => ({ ...image, alt: image.alt.replace('Panel principal', 'Main dashboard'), caption: 'Screen from daily business operations' })),
+		};
+	});
 }
